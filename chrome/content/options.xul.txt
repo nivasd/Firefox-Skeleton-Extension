@@ -1,0 +1,753 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!--
+
+todo: make the tabs above the dialog visible
+it is only showing when opened via add-on manager
+when opened via right click in status bar,
+then the tabs are not visible
+maybe add a next / previous button
+how to invoke dialog as the add on manager does?
+
+-->
+<prefwindow id="instabucket-prefs"
+     title="Insta Bucket Options"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     onload="on_window_load();"
+     buttonlabelextra1='close'
+     buttons='extra1'
+     ondialogaccept="on_window_accept();"
+     ondialogextra1="close();">
+<!--
+
+  - tab 1 : basics
+    - show experiments in the selected group listed
+    - select an experiment and show the details
+    - set bucket names
+    - change active grouping choice
+    - refresh page after bucket set
+    - show full name of experiments
+    - importing will truncate names
+    - listing alphabetically
+
+-->
+    <prefpane id="basicsPane" label="basics" flex="1"
+        onpaneload="init_basics_pane();">
+
+    <hbox>
+
+    <vbox>
+      <groupbox id="status-bar-experiments">
+        <caption label="Grouping of Experiments" />
+        <caption/>
+
+        <menulist label="Infosite" id="basics-grouping-dropdown" oncommand="on_select_basics_group();">
+          <menupopup>
+            <menuitem label="some random text to size the control" selected="true"/>
+          </menupopup>
+        </menulist>
+
+        <caption/>
+        <button id="basics-save-group-choice" label="set as current" oncommand="on_basics_save_group_choice();" icon='save'/>
+      </groupbox>
+
+      <groupbox>
+        <caption label="View Experiment Names" />
+        <listbox id="basics-exp-list" onselect='on_select_basics_experiment();'
+            height='140' sortDirection='ascending'/>
+        <caption/>
+      </groupbox>
+    </vbox>
+
+    <vbox>
+    <groupbox>
+        <caption label="Adjust bucket text" />
+        <caption/>
+        <textbox id="basics-bucket-0-name" placeholder="friendly name for 'off'" maxlength="60"/>
+        <textbox id="basics-bucket-1-name" placeholder="friendly name for 'on'" maxlength="60"/>
+        <textbox id="basics-bucket-2-name" maxlength="60"/>
+        <textbox id="basics-bucket-3-name" maxlength="60"/>
+        <button id="basics-update-buckets" label="apply bucket changes" oncommand="on_basics_save_buckets();" icon='save'/>
+        <caption/>
+        <checkbox id="basics-status-bar-official-names" oncommand='on_basics_status_bar_official_name();'
+            label='Use Official Names in Status Bar'/>
+        <caption/>
+    </groupbox>
+    <checkbox id="basics-reload-page-on-bucket-change" oncommand='on_reload_page_on_bucket_change();'
+        label='Reload Page on Bucket Change Request'
+        tooltiptext='checked = after the bucket has been set, reload the page.'/>
+    <checkbox id="basics-set-cookie-bucket-change" oncommand='on_set_cookie_bucket_change();'
+        label='Set Bucket via Cookie, Quick!'
+        tooltiptext='
+  checked = Set the browser cookie for the POS environment combo.
+  not = send an http request, and wait for the reply.
+  setting the cookie is immediate, very fast,
+  and is required for local host or jump box / going by IP.'/>
+    <checkbox id="basics-get-html-bucket-value" oncommand='on_set_html_bucket_value();'
+        label='Get Bucket via HTML'
+        tooltiptext='
+  checked = Get Bucket via HTML parsing.  Some pages support this
+  such as the hotel infosite page, and search results.'/>
+    <checkbox id="basics-get-omniture-bucket-value" oncommand='on_set_omn_bucket_value();'
+        label='Get Bucket via Omniture'
+        tooltiptext='
+  checked = Get Bucket via Omniture traffic watching.  All pages support
+  this, because this is how they report what is going on.  Recommended'/>
+  </vbox>
+<!--
+    setup scenario where there is nothing on the box.
+    simulate a clean install - no prefs.
+    <button id="reset-all" label="reset" oncommand="on_reset_all();"/>
+-->
+  </hbox>
+
+    </prefpane>
+
+<!--
+
+  - tab 2 : groups
+    - show experiments in groups
+    - create group, delete group
+    - modify what experiments are in a group
+    - button to re-accept defaults?
+
+    - select an experiment, edit = goto other tab
+    - url filters to match to show group
+    - url demo to launch for group, support multiple
+
+    - import or export group settings
+
+    - enter experiment ID to add to selected group
+-->
+
+    <prefpane id="groupsPane" label="groups" flex="1"
+        onpaneload="init_groups_pane();">
+
+  <hbox>
+  <vbox >
+    <groupbox id="status-bar-experiments">
+      <caption label="Group Create and Edit" />
+
+      <vbox>
+      <caption label="1. Enter Group Name" />
+      <menulist label="Infosite" id="groups-grouping-dropdown" editable="true" oncommand="on_select_g_group();">
+        <menupopup>
+          <menuitem label="some random text to size the control" selected="true"/>
+          <!-- would be nice to set the width without using the text  width='20' size='20' -->
+        </menupopup>
+      </menulist>
+
+    <groupbox id="status-bar-experiments">
+      <caption label="Status Bar Experiments" />
+      <vbox>
+      <caption label="2. Enter Experiment Short Names  manually or," />
+      <caption label="   use the find tab,   Add to Group   button" />
+      <hbox>
+        <textbox id="groups-exp-name0" size="10" maxlength="38"/>
+        <textbox id="groups-exp-name1" size="10" maxlength="38"/>
+        <textbox id="groups-exp-name2" size="10" maxlength="38"/>
+      </hbox>
+      <hbox>
+        <textbox id="groups-exp-name3" size="10" maxlength="38"/>
+        <textbox id="groups-exp-name4" size="10" maxlength="38"/>
+        <textbox id="groups-exp-name5" size="10" maxlength="38"/>
+      </hbox>
+      </vbox>
+    </groupbox>
+
+      </vbox>
+
+      <hbox>
+       <caption />
+       <vbox>
+          <caption />
+          <caption />
+          <button id="groups-save-exp-grouping" label='3. save grouping' oncommand='on_groups_save();' icon='save' />
+          <button id="groups-delete-exp-grouping" label='remove' oncommand='on_remove_grouping_2();' icon='delete' />
+          <caption />
+      </vbox>
+      </hbox>
+    </groupbox>
+
+    <button id="groups-defaults-exp-grouping" label='load grouping defaults' oncommand='on_add_default_groupings_2();' icon='delete' />
+
+  </vbox>
+    <vbox>
+    <groupbox id="groups-experiments">
+    <caption label="Group URL Interactions" />
+      <vbox>
+      <caption />
+      <checkbox id="grouping-use-url-match-group" oncommand='on_group_change_match_url();'
+            label='Auto select group when url matches'/>
+      <textbox id='grouping-url-match1' placeholder='text found in url' maxlength='50'/>
+      <textbox id='grouping-url-match2' placeholder='text found in url' maxlength='50'/>
+      <textbox id='grouping-url-match3' placeholder='text found in url' maxlength='50'/>
+      <caption />
+      <caption label="urls to show the feature"/>
+      <textbox id='grouping-url-demo1' placeholder='complete url' maxlength='50'/>
+      <textbox id='grouping-url-demo2' placeholder='complete url' maxlength='50'/>
+      <textbox id='grouping-url-demo3' placeholder='complete url' maxlength='50'/>
+      </vbox>
+    </groupbox>
+
+    <checkbox id="grouping-use-current-omniture-experiments-checkbox"
+        label='override group, based on omniture' oncommand='on_group_use_omniture();'/>
+    <checkbox id="grouping-use-current-html-experiments-checkbox"
+        label='override group, based on html' oncommand='on_group_use_html();'/>
+
+    </vbox>
+
+  </hbox>
+
+    </prefpane>
+<!--
+
+  - tab 3: find experiments
+    - show all experiments
+    - add to current group
+    - search by stuff
+    - load from abacus home page
+    - load from config file
+    - save / export
+    - show what groups it is in
+    - show pos with ids
+    - add to a group
+    - show after a given ID
+    - sort by ID
+    - sort by date created
+    - filter by stat of running, complete, restarted, incomplete, throttle, owner ( old names )
+    - filter by POS
+    - highlight a given ID
+    - button to edit selects experiment in next tab
+
+-->
+
+
+<prefpane id="findPane" label="find" flex="1" onpaneload="init_find_pane();">
+
+<hbox>
+<hbox>
+  <groupbox id="find-filter-options">
+    <caption label="Experiment Search"/>
+
+    <hbox>
+    <checkbox id="find-2-pos-checkbox" label='2+ pos' oncommand='on_find_2_pos_match();'/>
+    <checkbox id="find-us-pos-checkbox" label='US pos' oncommand='on_find_us_pos_match();'/>
+    </hbox>
+    <!--
+    <hbox>
+    <button id="find-id-match-button" label='match id: ' oncommand='on_find_id_match();'/>
+    <textbox id="find-id-match-textbox" placeholder='1234' width='60'/>
+    </hbox>
+    -->
+    <hbox>
+    <button id="find-id-larger-button" label='min id: ' oncommand='on_find_id_greater();'/>
+    <textbox id="find-id-larger-textbox" value='999' placeholder='1234' width='60'/>
+    </hbox>
+    <hbox>
+    <button id="find-name-match-button" label='name has: ' oncommand='on_find_name_match();'/>
+    <textbox id="find-name-match-textbox" placeholder='flight' width='60'/>
+    </hbox>
+    <hbox>
+    <button id="find-abacus-match-button" label='abacus has: ' oncommand='on_find_abacus_match();'/>
+    <textbox id="find-abacus-match-textbox" placeholder='tuepham' width='60'/>
+    </hbox>
+    <checkbox id="find-is-hidden-checkbox" label='hidden' oncommand='on_find_show_hidden();'/>
+    <checkbox id="find-show-long-name-checkbox" label='show long name' oncommand='on_show_long_name();'/>
+<!--    <checkbox id="find-show-id-checkbox" label='show id' oncommand='on_show_id();'/> -->
+
+  </groupbox>
+  </hbox>
+
+  <hbox>
+  <vbox>
+    <listbox id="find-exp-list" onselect='on_select_experiment_find();' flex="1" sortDirection='ascending'/>
+    <hbox>
+    <button id="find-exp-use-button" label='Add to Group' oncommand='on_find_use();'/>
+    <button id="find-exp-edit-button" label='Load in Edit Tab' oncommand='on_find_edit();'/>
+    </hbox>
+  </vbox>
+  </hbox>
+<!--
+  <groupbox id="find-pos-show">
+    <caption label="Point of Sale IDs"/>
+    <vbox>
+    <hbox>
+    <listbox id="find-pos-list" onselect='on_select_find_pos();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="100">
+      <listhead>
+         <listheader label="pos" width="40"/>
+         <listheader label="id" width="60"/>
+      </listhead>
+    </listbox>
+    </hbox>
+    </vbox>
+  </groupbox>
+-->
+
+  <groupbox id='internal-abacus-stuff'>
+  <caption label="Details" />
+      <textbox id="find-abacus-details" multiline='true' height='210' width='190'
+        placeholder="details appear here when loaded from abacus web page"/>
+  </groupbox>
+
+</hbox>
+
+</prefpane>
+
+<!--
+
+  - tab 4: edit experiment details
+    - full name, short name
+    - pos, exp ids
+    - buckets
+    - import by id from abacus home page
+    - url to launch to demo experiment, support multiple
+    - url place holders for pos, environmenet
+
+-->
+
+<prefpane id="editPane" label="edit" flex="1" onpaneload="init_edit_pane()">
+
+  <hbox>
+
+  <groupbox id="find-pos-show">
+    <caption label="Experiment Details"/>
+
+    <vbox>
+    <hbox>
+        <textbox id='edit-full-name' placeholder='full experiment name'/>
+    </hbox>
+    <hbox>
+        <caption label='Short Name:' />
+        <textbox id='edit-short-name' placeholder='short acronym' width='50'/>
+    </hbox>
+    </vbox>
+
+    <vbox>
+    <listbox id="edit-pos-list" onselect='on_select_edit_pos();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="80">
+      <listhead>
+         <listheader label="pos" width="40"/>
+         <listheader label="id" width="50"/>
+      </listhead>
+      <listcols>
+        <listcol/>
+        <listcol flex='1'/>
+      </listcols>
+    </listbox>
+
+    <hbox>
+    <textbox id='edit-pos-to-add' placeholder='US' width='40'/>
+    <textbox id='edit-id-to-add' placeholder='1234' width='60'/>
+    </hbox>
+
+    <hbox>
+    <button id="edit-pos-save" label="add pos" oncommand="on_save_edit_pos();" icon='save'/>
+    <button id="edit-pos-remove" label="remove" oncommand="on_remove_edit_pos();" icon='save'/>
+    <button id="edit-pos-clear" label="clear" oncommand="on_clear_edit_pos();" icon='save'/>
+    </hbox>
+    </vbox>
+
+  </groupbox>
+
+  <vbox>
+  <groupbox>
+    <caption label="Buckets" />
+    <caption/>
+    <textbox id="edit-bucket-0-name" placeholder="friendly name for 'off'" maxlength="60"/>
+    <textbox id="edit-bucket-1-name" placeholder="friendly name for 'on'" maxlength="60"/>
+    <textbox id="edit-bucket-2-name" maxlength="60"/>
+    <textbox id="edit-bucket-3-name" maxlength="60"/>
+
+    <caption/>
+  </groupbox>
+
+  <checkbox id="edit-is-exp-hidden" label='Hide this experiment'/>
+
+  <button id="edit-pos-save" label="save experiment" oncommand="on_edit_save();" icon='save'/>
+  </vbox>
+
+  </hbox>
+</prefpane>
+
+<!--
+    <prefpane id="internalsPane" label="internals" flex="1">
+    </prefpane>
+-->
+
+
+<!--
+
+- stand alone page with all experiments
+  show each grouping as the group header
+  show each experiment as a row
+  show each point of sale in the color of the bucket
+  select the row / experiment
+  another list box fills with each pos, to see options, like demo web page, buckets
+  select a row in the pos list box
+  - see if the bucket is forced
+  - bucket choices listed, active bucket highlighted
+  - buckets appear as buttons
+  - click the button, it tries to force the bucket, shows result
+  - if bucket is forced, then update the highlight text
+-->
+    <prefpane id="urlPane" label="urls" flex="1"
+        onpaneload="init_url_pane();">
+
+    <hbox>
+<!--  1. select the experiment -->
+
+    <vbox>
+
+      <menulist label="Infosite" id="url-grouping-dropdown" oncommand="on_select_url_group();">
+        <menupopup>
+          <menuitem label="some random text to size the control" selected="true"/>
+          <!-- would be nice to set the width without using the text  width='20' size='20' -->
+        </menupopup>
+      </menulist>
+
+    <listbox id="url-exp-list" onselect='on_select_url_experiment();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="200">
+      <listhead>
+         <listheader label="exp" width="160"/>
+         <listheader label="pos" width="40"/>
+      </listhead>
+      <listcols>
+        <listcol flex='1'/>
+        <listcol/>
+      </listcols>
+    </listbox>
+    </vbox>
+
+<!--  2. select the point of sale -->
+    <listbox id="url-pos-list" onselect='on_select_url_pos();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="260" size="260" >
+      <listhead>
+         <listheader label="pos" width="40"/>
+         <listheader label="id" width="50"/>
+         <listheader label="n" width="20" />
+         <listheader label="bucket ( future )" width="190"/>
+         <listheader label="forced" width="60"/>
+      </listhead>
+      <listcols>
+        <listcol/>
+        <listcol/>
+        <listcol/>
+        <listcol flex='1'/>
+      </listcols>
+    </listbox>
+
+    </hbox>
+    <label/>
+<!--
+    <hbox>
+    <caption label="future use:" />
+    <button id="url-bucket-0" label="bucket 0" oncommand="on_url_bucket_0();" icon='save'/>
+    <button id="url-bucket-1" label="bucket 1" oncommand="on_url_bucket_1();" icon='save'/>
+    <button id="url-bucket-2" label="bucket 2" oncommand="on_url_bucket_2();" icon='save'/>
+    <button id="url-bucket-3" label="bucket 3" oncommand="on_url_bucket_3();" icon='save'/>
+    </hbox>
+-->
+<!--  3. set the bucket -->
+  <groupbox>
+    <caption label="urls to manually set and get bucket values" />
+
+    <hbox>
+    <menulist label="Infosite" id="url-env-dropdown" oncommand="on_select_url_env();">
+      <menupopup>
+        <menuitem label="to size control" selected="true"/>
+      </menupopup>
+    </menulist>
+    <caption label="get:" />
+    <textbox id="url-get-exp-url" placeholder="url to get bucket" flex='1' maxlength="140"/>
+    <!--
+    <button id='get_ie' label='ie' oncommand='on_get_ie();' style="min-width: 20px; "/>
+    <button id='get_chrome' label='ch' oncommand='on_get_chrome();' style="min-width: 20px; "/>
+    -->
+    </hbox>
+
+    <hbox>
+    <caption label="set:" />
+    <textbox id="url-set-exp-url" placeholder="url to set bucket" flex='1' maxlength="140"/>
+    <!--
+    <button id='set_ie' label='ie' oncommand='on_set_ie();' style="min-width: 20px; "/>
+    <button id='set_chrome' label='ch' oncommand='on_set_chrome();' style="min-width: 20px; "/>
+    -->
+    </hbox>
+
+    <label/>
+<!--
+    <hbox>
+    <caption label="future use:" />
+    <button id="url-demo-0" label="I undr risk" oncommand="on_url_demo_0();" icon='save'/>
+    <button id="url-demo-1" label="add exc" oncommand="on_url_demo_1();" icon='save'/>
+    <button id="url-demo-2" label="demo 2" oncommand="on_url_demo_2();" icon='save'/>
+    </hbox>
+-->
+
+  </groupbox>
+
+    </prefpane>
+
+
+
+
+
+
+<!--
+
+research code access
+
+in the html of the hotel infosite page there is lots of info
+- which experiments apply to the page
+- what tealeaf / omniture values are set
+-
+
+other pages, such as search, flights, udp, may have similar stuff
+this page will help to explore that stuff.
+
+all html and cookie access is possible by finding the active tab
+
+
+stuff that would help with research:
+- type in a regex to pull out stuff
+-
+
+buttons to update the tabs based on experiments found
+edit box with all of the html visible to copy out
+button to ask for new snapshot of html
+edit box with the url
+
+-->
+
+
+<!--  - ->
+
+    <prefpane id="htmlPane" label="html" flex="1"
+        onpaneload="init_html_pane();">
+
+    <hbox>
+
+    <vbox>
+
+    <listbox id="html-regex-list" onselect='on_select_regex();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="450">
+      <listhead>
+         <listheader label="name" width="120"/>
+         <listheader label="comment" width="160"/>
+         <listheader label="regex" width="140"/>
+      </listhead>
+      <listcols>
+        <listcol flex='1'/>
+        <listcol/>
+      </listcols>
+    </listbox>
+    </vbox>
+
+    <listbox id="html-result-list" onselect='on_select_result();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" >
+      <listhead>
+         <listheader label="left" width="30" />
+         <listheader label="right" />
+      </listhead>
+      <listcols>
+        <!- - todo: how to get a ratio? - ->
+        <listcol flex='1'/>
+        <listcol flex='1'/>
+      </listcols>
+    </listbox>
+
+    </hbox>
+    <label/>
+
+    <hbox>
+    <caption label="set:" />
+    <textbox id="url-set-exp-url" placeholder="url to set bucket" flex='1' maxlength="140"/>
+    <!- -
+    <button id='set_ie' label='ie' oncommand='on_set_ie();' style="min-width: 20px; "/>
+    <button id='set_chrome' label='ch' oncommand='on_set_chrome();' style="min-width: 20px; "/>
+    - ->
+    </hbox>
+
+      <textbox id="html-content-details" multiline='true' flex='1'
+        placeholder="html appears here when requested"/>
+
+    <label/>
+<!- -
+    <hbox>
+    <caption label="future use:" />
+    <button id="url-demo-0" label="I undr risk" oncommand="on_url_demo_0();" icon='save'/>
+    <button id="url-demo-1" label="add exc" oncommand="on_url_demo_1();" icon='save'/>
+    <button id="url-demo-2" label="demo 2" oncommand="on_url_demo_2();" icon='save'/>
+    </hbox>
+- ->
+
+    </prefpane>
+
+<!- - -->
+
+
+
+
+
+
+
+
+<!--
+
+    <prefpane id="omniturePane" label="omniture" flex="1"
+        onpaneload="init_omniture_pane();">
+
+    <hbox>
+<!- -  1. select the url they are stored under
+        maybe just show the root urls ( domain, pos, env... type stuff )
+- ->
+
+    <vbox>
+
+      <menulist label="Infosite" id="omniture-url-dropdown" oncommand="on_select_omniture_url();">
+        <menupopup>
+          <menuitem label="some random text to size the control" selected="true"/>
+          <!- - would be nice to set the width without using the text  width='20' size='20' - ->
+        </menupopup>
+      </menulist>
+
+    <listbox id="omniture-list" onselect='on_select_omniture();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="200">
+      <listhead>
+         <listheader label="name" width="60"/>
+         <listheader label="value" width="240"/>
+      </listhead>
+      <listcols>
+        <listcol flex='1'/>
+        <listcol/>
+      </listcols>
+    </listbox>
+    </vbox>
+
+    </hbox>
+    <label/>
+
+
+    </prefpane>
+
+    -->
+
+<!--
+
+        Cookies
+
+-->
+
+
+    <prefpane id="cookiesPane" label="cookies" flex="1"
+        onpaneload="init_cookies_pane();">
+
+    <vbox>
+
+    <hbox>
+    <button id="cookie-manual-go" label="get cookies" oncommand="on_manual_url_go();" />
+    <textbox id="cookie-manual-url" placeholder="url for cookies" flex='1' maxlength="240"/>
+    </hbox>
+
+    <listbox id="cookie-big-list" onselect='on_select_cookie_big();'
+        flex="1" sortDirection='ascending'
+        seltype="single"
+        rows="5" width="260" size="260" >
+      <listhead>
+         <listheader label="name" width="140"/>
+         <listheader label="value" width="150"/>
+      </listhead>
+      <listcols>
+        <listcol/>
+        <listcol flex='1'/>
+      </listcols>
+    </listbox>
+
+    <hbox>
+    <caption id="cookie-experiment-caption" label="forced bucket:    " />
+    <caption label="id:" />
+    <textbox id="cookie-experiment-id" flex='1' maxlength="5" width='20'/>
+<!--    <textbox id="cookie-experiment-name" flex='1' maxlength="68" width='120'/> -->
+    <caption label="bucket:" />
+    <textbox id="cookie-experiment-bucket" flex='1' maxlength="2" width='10'/>
+    <button id="cookie-manual-set" label="prep bucket cookie" oncommand="on_cookie_prep_exp();" />
+    </hbox>
+
+    <hbox>
+    <textbox id="cookienew0" flex='1'/>
+    <button id="cookie-manual-set-0" label="set cookie" oncommand="on_cookie_set(0);" />
+    </hbox>
+    <hbox>
+    <textbox id="cookienew1" flex='1'/>
+    <button id="cookie-manual-set-1" label="set cookie" oncommand="on_cookie_set(1);" />
+    </hbox>
+    <hbox>
+    <caption label="set:" />
+    <textbox id="set-cookie-text" flex='1'/>
+    </hbox>
+
+    </vbox>
+    </prefpane>
+<!--
+
+    in theory there's a way to use external source for xul
+
+<prefpane id="ib-exp-pane" label="Experiment Settings" onpaneload="on_pane_load()"
+    src='chrome://instabucket/content/options_full.xul'/>
+
+-->
+
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_basics.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_groups.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_find.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_edit.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_url.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_omniture.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_cookies.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/pref_html.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/instabucket.js" />
+<!--  <script type="application/x-javascript" src="chrome://instabucket/content/preferences.js" /> -->
+  <script type="application/x-javascript" src="chrome://instabucket/content/exp_current.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/debug.js" />
+
+</prefwindow>
+
+<!--
+
+icon attribute value    icon attribute value
+accept  close
+cancel  print
+help    add
+open
+    remove
+save
+    refresh
+find
+    go-forward
+clear
+    go-back
+yes
+    properties
+no
+    select-font
+apply
+    select-color
+
+-->

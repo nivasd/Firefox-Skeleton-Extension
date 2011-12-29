@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<overlay id="most-basic--overlay" onload="populate_menus();" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="most_basic_overlay.js"/>
+
+<toolbox id="navigator-toolbox">
+
+    <toolbar class="chromeclass-toolbar"
+        toolbarname="mostbasicoverlay"
+        key="open-most-basic-menu"
+        customizable="true" id="most-basic-toolbar">
+
+<!--        <toolbarbutton label="dlg" id="toolbar-hotel-open-sidebar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" /> -->
+        <toolbarbutton label="open side bar" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
+        <toolbarbutton label="GO" id="toolbar-basic-go" oncommand="on_menu_go();" />
+
+        <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="hello!"/>
+
+        <menulist label="Some Names" minwidth="90" flex="1" id="toolbar-basic-choice" oncommand="on_menu_basic_change(); on_basic_menu_select('toolbar-basic-choice');" >
+          <menupopup>
+           <menuitem label="first" value='54481' selected="true"/>
+           <menuitem label="second" value='201272'/>
+           <menuitem label="third" value='198225'/>
+           <menuitem label="fourth" value='14423'/>
+         </menupopup>
+        </menulist>
+
+    </toolbar>
+</toolbox>
+
+<script>
+function show_toolbar(event)
+{
+    alert("yes called, no not working yet.");
+    showToolbar();
+    event.target.setAttributed("checked", "true");
+    toggleMenu('hotel_deep-toolbar');
+}
+
+</script>
+
+<keyset>
+  <key id="open-hotel-sidebara" modifiers="control alt shift" key="I" oncommand="toggleSidebar('viewSidebar_hotel_deep');"/>
+  <!-- go mac is command = alt or control? -->
+  <key id="open-hotel-sidebarb" modifiers="command alt shift" key="I" oncommand="toggleSidebar('viewSidebar_hotel_deep');"/>
+  <key id="open-hotel-sidebarc" modifiers="command control shift" key="I" oncommand="toggleSidebar('viewSidebar_hotel_deep');"/>
+
+  <key id="open-hotel-menua" modifiers="control alt shift" key="M" oncommand="show_toolbar();"/>
+  <!-- go mac is command = alt or control? -->
+  <key id="open-hotel-menub" modifiers="command alt shift" key="M" oncommand="toggleMenu('hotel_deep-toolbar');"/>
+  <key id="open-hotel-menuc" modifiers="command control shift" key="M" oncommand="toggleMenu('hotel_deep-toolbar');"/>
+</keyset>
+
+<menupopup id="viewSidebarMenu">
+    <menuitem observes="viewSidebar_hotel_deep" />
+</menupopup>
+
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewSidebar_hotel_deep"
+                 label="basic_sidebar_name"
+                 key="open-hotel-sidebara"
+                 autoCheck="false"
+                 type="checkbox"
+                 group="sidebar"
+                 sidebarurl="chrome://most_basic/content/basic-sidebar.xul"
+                 sidebartitle="basic sidebar title"
+                 oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
+  </broadcasterset>
+
+</overlay>

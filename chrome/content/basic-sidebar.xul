@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type"text/css" ?>
+<!DOCTYPE page SYSTEM "chrome://hotel_deep/locale/overlay.dtd">
+
+<!-- thank you Aditya! for almost all of the code
+     it was re-arranged to work with firefox
+
+
+     todo: change to combo box for point of sale.
+
+     todo: add pref to deep link to date x weeks out, room count, children, adults
+ -->
+
+<page id="adds_helper_Sidebar" title="Adds HTML Parser"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="basic-sidebar.js"/>
+
+  <vbox flex="1">
+    <button id="basic-test-button" oncommand="alert('parse click'); basic_test();" label="basic test"/>
+    <button id="parse-html-button" oncommand="parse_html_text();" label="Parse HTML for div id_ad"/>
+    <button id="parse-html-button" oncommand="parse_html_cms();" label="Parse HTML for html.cms"/>
+
+    <label value="parsing result" />
+    <textbox id="parse-output-textbox-0" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-1" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-2" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-3" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-4" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-5" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-6" value="" multiline="true" width="200"/>
+    <textbox id="parse-output-textbox-7" value="" multiline="true" width="200"/>
+
+    <label value="debug progress" />
+    <textbox id="debug-progress" value="" multiline="true" size="40" maxlength="1000"/>
+  </vbox>
+
+</page>
+

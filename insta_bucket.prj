@@ -1,0 +1,70 @@
+<project version="Crimson Editor 3.60">
+	<category name="root" expanded="yes">
+		<localfile path="C:\dev\ff_ext\bucket\chrome.manifest" />
+		<localfile path="C:\dev\ff_ext\bucket\install.rdf" />
+	</category>
+	<category name="xul" expanded="yes">
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\group_popup.xul" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\id_popup.xul" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\instabucket.xul" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\options.xul" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\options_full.xul" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\show_url_popup.xul" />
+	</category>
+	<category name="js" expanded="yes">
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\bucket_capture.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\debug.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\exp_current.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\group_popup.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\instabucket.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\one_exp_id.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\popup_show_url.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_basics.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_cookies.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_edit.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_find.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_groups.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_html.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_omniture.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_url.js" />
+		<localfile path="C:\dev\ff_ext\bucket\chrome\content\preferences.js" />
+	</category>
+	<category name="wats" expanded="no">
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsCookiesTree.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsOverlay.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsReport.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsRuleTree.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsSidebar.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsSidebarHistory.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsSidebarIO.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsSidebarSC.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsUninstall.js" />
+		<localfile path="C:\dev\ff_ext\demos\wats\chrome\content\js\watsUtils.js" />
+	</category>
+	<localfile path="C:\dev\ff_ext\bucket\_todo.txt" />
+</project>
+
+<workspace version="Crimson Editor 3.60">
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\instabucket.js" linenum="2706" placement="0:1:-1:-1:-4:-30:22:29:502:353" />
+	<localfile path="C:\dev\ff_ext\hotel\chrome\content\exp_current.js" linenum="277" placement="0:1:-1:-1:-4:-30:66:87:817:360" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\bucket_capture.js" linenum="261" placement="0:1:-1:-1:-4:-30:88:116:773:525" />
+	<localfile path="C:\dev\ff_ext\bucket\_todo.txt" linenum="11" placement="2:3:-1:-1:-4:-30:132:174:674:583" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\exp_current.js" linenum="955" placement="0:1:-1:-1:-4:-30:0:0:542:409" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\instabucket.xul" linenum="24" placement="0:1:-1:-1:-4:-30:0:0:573:409" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_basics.js" linenum="53" placement="0:1:-1:-1:-4:-30:22:29:595:438" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_groups.js" linenum="29" placement="0:1:-1:-1:-4:-30:66:87:795:496" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome.manifest" linenum="1" placement="0:1:-1:-1:-4:-30:88:116:817:525" />
+	<localfile path="C:\dev\ff_ext\bucket\install.rdf" linenum="14" placement="0:1:-1:-1:-4:-30:110:145:839:554" />
+	<localfile path="c:\dev\ff_ext\bucket\extract_abacus_ids.pl" linenum="32" placement="0:1:-1:-1:-4:-30:132:174:861:583" />
+	<localfile path="C:\dev\ff_ext\hotel\defaults\preferences\prefs.js" linenum="1" placement="0:1:-1:-1:-4:-30:44:58:839:331" />
+	<localfile path="c:\temp\exp_pref.js" linenum="502" placement="0:1:-1:-1:-4:-30:66:87:861:360" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_find.js" linenum="348" placement="0:1:-1:-1:-4:-30:154:203:883:612" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_cookies.js" linenum="218" placement="0:1:-1:-1:-4:-30:0:0:817:208" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_url.js" linenum="458" placement="0:1:-1:-1:-4:-30:22:29:839:237" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\show_url_popup.xul" linenum="20" placement="0:1:-1:-1:-4:-30:0:0:773:373" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\popup_show_url.js" linenum="46" placement="0:1:-1:-1:-4:-30:22:29:795:402" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\group_popup.js" linenum="1" placement="0:1:-1:-1:-4:-30:44:58:817:431" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\options_full.xul" linenum="1" placement="0:1:-1:-1:-4:-30:66:87:792:460" />
+	<localfile path="C:\dev\ff_ext\bucket\chrome\content\pref_edit.js" linenum="26" placement="0:1:-1:-1:-4:-30:88:116:814:489" />
+</workspace>
+

@@ -1,0 +1,6 @@
+content most_basic chrome/content/
+content most_basic chrome/content/ contentaccessible=yes
+
+# Firefox
+overlay chrome://browser/content/browser.xul chrome://most_basic/content/most_basic.xul
+overlay chrome://browser/content/browser.xul chrome://most_basic/content/most_basic_overlay.xul

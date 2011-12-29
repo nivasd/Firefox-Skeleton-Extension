@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<prefwindow id="id-popup"
+     title="Insta Bucket One Experiment"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     onload="on_window_load();"
+     ondialogaccept="on_window_accept();">
+
+<prefpane id="id-one-popup" label="Experiment Settings" onpaneload="on_pane_load()">
+
+  <script type="application/x-javascript" src="chrome://instabucket/content/one_exp_id.js" />
+  <script src="instabucket.js"/>
+  <script src="exp_current.js"/>
+
+  <groupbox id="group-box-one">
+  <caption label="Watch This Experiment" />
+
+    <hbox>
+
+    <!-- todo: accept experiment name -->
+    <!-- todo: do not pre populate with preference values -->
+    <!-- todo: clear out values in on window load -->
+    <!-- todo: save experiment to current group -->
+    <!-- todo: checkbox to just set bucket, don't remember -->
+    <!-- todo: if dialog already opened then bring to front -->
+
+    <textbox id="id-to-watch" placeholder='1123, 1124, 1125'
+        preference="pref_manual_id"/>
+
+        <!-- todo: change to accept bucket index to change directly -->
+
+    <checkbox id="current-pos-check" oncommand='on_select_pos();'
+        label='Matches Current POS' preference="pref_manual_use_current_pos"/>
+
+    <textbox id="pos-for-id" placeholder='US, UK, AU'
+        preference="pref_manual_pos"/>
+
+    </hbox>
+
+
+  </groupbox>
+
+  <preferences>
+    <preference id="pref_manual_id" name="InstaBucket.manual.id" type="string"/>
+    <preference id="pref_manual_pos" name="InstaBucket.manual.pos" type="string"/>
+    <preference id="pref_manual_use_current_pos" name="InstaBucket.use.current.pos" type="bool"/>
+  </preferences>
+
+</prefpane>
+
+</prefwindow>

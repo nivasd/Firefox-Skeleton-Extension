@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!-- this file is not used -->
+
+<prefpane id="ib-exp-pane" label="Experiment Settings" onpaneload="on_pane_load()">
+
+    <groupbox id="group-box-experiments">
+    <caption label="Experiments" />
+
+    <vbox> <!-- all items in group box, excluding the save buttons -->
+      <hbox> <!-- all items in group box, excluding the save buttons -->
+
+        <vbox>
+          <listbox id="exp-list" onselect='on_select_experiment();' flex="1" sortDirection='ascending'/>
+          <hbox>
+            <checkbox id="show-long-names" oncommand='on_list_by_long_name();'
+                    label='Show Full Name in List Above'/>
+          </hbox>
+          <groupbox id="filter-options">
+            <caption label="Experiment Filter Options"/>
+
+            <hbox>
+              <checkbox id="pos-count-check" oncommand='on_select_pos_count();' label='Has 2+ POS'/>
+              <checkbox id="pos-us-check" oncommand='on_select_pos_us();' label='Has US pos'/>
+            </hbox>
+            <hbox>
+              <checkbox id="id-match-check" oncommand='on_select_id_match();' label='ID ='/>
+              <textbox id="id-match-textbox" placeholder='1234' />
+            </hbox>
+            <hbox>
+              <checkbox id="name-match-check" oncommand='on_select_name_match();' label='Name has'/>
+              <textbox id="name-match-textbox" placeholder='Flight' />
+            </hbox>
+
+          </groupbox>
+
+        </vbox>
+
+        <vbox> <!-- names and point of sale -->
+          <label value="Official Name" />
+          <textbox id="exp-full-name" placeholder="friendly name for experiment" maxlength="50"/>
+          <label value="Status Bar Name"/>
+          <textbox id="exp-short-name" placeholder="shows in status bar" maxlength="50"/>
+
+          <label value=""/>      <label value=""/>
+
+          <groupbox id="pos-ids-experiments">
+            <caption label="Ids by Point of Sale" />
+
+            <hbox pack='right'>
+              <caption label="POS : "/>
+              <menulist label="US" width="60" id="pos-dropdown" editable="true" oncommand="on_select_pos();">
+                <menupopup>
+                  <menuitem label="US" selected="true"/>
+                  <menuitem label="JP"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+
+<!--            <textbox id="pos-name-textbox" placeholder="point of sale US,UK,CA..."/> -->
+            <hbox pack='right'>
+              <caption label="ID : "/>
+              <textbox id="exp-id-textbox" placeholder="experiment ID" maxlength='6' size='5' pack='right' />
+            </hbox>
+
+          </groupbox>
+
+        </vbox> <!-- names and point of sale -->
+
+        <vbox>
+          <groupbox id="bucket-names-experiments">
+          <caption label="Bucket Names" />
+              <textbox id="bucket-0-name" placeholder="friendly name for 'off'" maxlength="60"/>
+              <textbox id="bucket-1-name" placeholder="friendly name for 'on'" maxlength="60"/>
+              <textbox id="bucket-2-name" maxlength="60"/>
+              <textbox id="bucket-3-name" maxlength="60"/>
+          </groupbox>
+
+          <button id="pos-save" label="save changes" oncommand="on_save_exp();" icon='save'/>
+        </vbox>
+
+        <vbox>
+          <groupbox id="web-details-experiments">
+          <caption label="Abacus Details" />
+              <textbox id="abacus-details" multiline='true' height='210' width='190'
+                placeholder="details appear here when loaded from abacus web page"/>
+          </groupbox>
+        </vbox>
+
+      </hbox> <!-- all items in group box, excluding the save buttons -->
+    </vbox> <!-- all items in group box, excluding the save buttons -->
+
+    <caption/>
+    <hbox pack="right">
+      <caption/> <caption/>
+      <button id="remove-exp" label="Remove Experiment" oncommand="on_remove_exp();" accesskey='r' icon='remove' />
+      <button id="load-exp" label="Refresh List" oncommand="on_load_all();" icon='find'/>
+    </hbox>
+
+  </groupbox>
+
+  <hbox >
+    <groupbox id="status-bar-experiments">
+    <caption label="Experiment Grouping" />
+      <hbox >
+      <menulist label="Infosite" id="grouping-dropdown" editable="true" oncommand="on_select_group();">
+        <menupopup>
+          <menuitem label="some random text to size the control" selected="true"/>
+        <!--
+            would be nice to set the width without using the text
+             width='20' size='20'
+          <menuitem label="Infosite" selected="true"/>
+          <menuitem label="Hotel Search"/>
+          <menuitem label="Flights"/>
+          <menuitem label="Packages"/>
+          -->
+        </menupopup>
+      </menulist>
+
+      <button id="save-exp-grouping" label='save grouping' oncommand='on_save_grouping();' icon='save' />
+      <button id="delete-exp-grouping" label='remove' oncommand='on_remove_grouping();' icon='delete' />
+      <button id="defaults-exp-grouping" label='defaults' oncommand='on_add_default_groupings();' icon='delete' />
+<!--
+      <caption label='url match:' />
+      <textbox id='grouping-url-match' placeholder='if url matches, then use this group' maxlength='50'/>
+      -->
+      </hbox>
+
+      <hbox >
+        <textbox preference="pref_exp_name0" id="exp-name0" size="10" maxlength="38"/>
+        <textbox preference="pref_exp_name1" id="exp-name1" size="10" maxlength="38"/>
+        <textbox preference="pref_exp_name2" id="exp-name2" size="10" maxlength="38"/>
+        <textbox preference="pref_exp_name3" id="exp-name3" size="10" maxlength="38"/>
+        <textbox preference="pref_exp_name4" id="exp-name4" size="10" maxlength="38"/>
+        <textbox preference="pref_exp_name5" id="exp-name5" size="10" maxlength="38"/>
+      </hbox>
+
+      <checkbox id="status-bar-official-names" oncommand='on_status_bar_official_name();'
+        label='Use Official Names in Status Bar'/>
+      <checkbox id="reload-page-on-bucket-change" oncommand='on_reload_page_on_bucket_change();'
+      label='Reload Page on Bucket Change Request'/>
+
+    </groupbox>
+<!--
+    setup scenario where there is nothing on the box.
+    simulate a clean install - no prefs.
+    <button id="reset-all" label="reset" oncommand="on_reset_all();"/>
+-->
+  </hbox>
+
+  <preferences>
+    <preference id="pref_exp_name0" name="InstaBucket.experiment0.tla" type="string"/>
+    <preference id="pref_exp_id0_us" name="InstaBucket.experiment0.id_us" type="string"/>
+    <preference id="pref_exp_id0_uk" name="InstaBucket.experiment0.id_uk" type="string"/>
+    <preference id="pref_exp_id0_ca" name="InstaBucket.experiment0.id_ca" type="string"/>
+
+    <preference id="pref_exp_name1" name="InstaBucket.experiment1.tla" type="string"/>
+    <preference id="pref_exp_id1_us" name="InstaBucket.experiment1.id_us" type="string"/>
+    <preference id="pref_exp_id1_uk" name="InstaBucket.experiment1.id_uk" type="string"/>
+    <preference id="pref_exp_id1_ca" name="InstaBucket.experiment1.id_ca" type="string"/>
+
+    <preference id="pref_exp_name2" name="InstaBucket.experiment2.tla" type="string"/>
+    <preference id="pref_exp_id2_us" name="InstaBucket.experiment2.id_us" type="string"/>
+    <preference id="pref_exp_id2_uk" name="InstaBucket.experiment2.id_uk" type="string"/>
+    <preference id="pref_exp_id2_ca" name="InstaBucket.experiment2.id_ca" type="string"/>
+
+    <preference id="pref_exp_name3" name="InstaBucket.experiment3.tla" type="string"/>
+    <preference id="pref_exp_id3_us" name="InstaBucket.experiment3.id_us" type="string"/>
+    <preference id="pref_exp_id3_uk" name="InstaBucket.experiment3.id_uk" type="string"/>
+    <preference id="pref_exp_id3_ca" name="InstaBucket.experiment3.id_ca" type="string"/>
+
+    <preference id="pref_exp_name4" name="InstaBucket.experiment4.tla" type="string"/>
+    <preference id="pref_exp_id4_us" name="InstaBucket.experiment4.id_us" type="string"/>
+    <preference id="pref_exp_id4_uk" name="InstaBucket.experiment4.id_uk" type="string"/>
+    <preference id="pref_exp_id4_ca" name="InstaBucket.experiment4.id_ca" type="string"/>
+
+    <preference id="pref_exp_name5" name="InstaBucket.experiment5.tla" type="string"/>
+    <preference id="pref_exp_id5_us" name="InstaBucket.experiment5.id_us" type="string"/>
+    <preference id="pref_exp_id5_uk" name="InstaBucket.experiment5.id_uk" type="string"/>
+    <preference id="pref_exp_id5_ca" name="InstaBucket.experiment5.id_ca" type="string"/>
+  </preferences>
+
+
+</prefpane>
+

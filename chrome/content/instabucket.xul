@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE overlay >
+<overlay id="instabucket-overlay"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<!--
+<script type="application/x-javascript" src="chrome://instabucket/instabucket.js"/>
+<script type="application/x-javascript" src="chrome://instabucket/exp_current.js"/>
+<script type="application/x-javascript" src="chrome://instabucket/debug.js"/>
+-->
+<statusbar id="status-bar">
+
+<!-- todo: programatically show menu
+    oncontextmenu='open_popup()'
+        single menu appears above status item.
+
+    https://developer.mozilla.org/en/CSS/border-style
+ -->
+
+  <popupset>
+    <popup id="full-feature-context-menu" position="before_start" style="background:Menu;border:ridge">
+<!--      <menuitem id='refresh' label="Refresh Now"  default="true" oncommand="InstaBucket.onMenuForceRefresh()"/> -->
+      <menuitem id='bucket-menu-prefs' label='Preferences' oncommand="InstaBucket.onMenuPrefs()"/>
+      <menuitem id='bucket-menu-load_file' label='Parse Config File' oncommand="InstaBucket.onMenuLoadFile()"/>
+      <menuitem id='bucket-menu-loadweb' label='Parse Abacus Web Page' oncommand="InstaBucket.onMenuLoadWebPage()"/>
+<!--      <checkbox id='bucket-menu-disabled' label='Track Bucket Changes'
+        checked='true' autocheck='true'
+        oncommand="InstaBucket.onMenuDisable(this.checked); this.hidePopup();"/> -->
+
+      <!--
+      <menuseparator/>
+      <menuitem id='refresh' label="Use Drop Down to Set Bucket" style='font-weight:bold'/>
+      <menulist id='set-bucket-menulist' label='choices:' >
+        <menupopup id='set-bucket-popup' label='choices:' >
+          <menuitem id='set-bucket-0' label='Bucket 0' oncommand="InstaBucket.onMenuSetBucket(0);"/>
+          <menuitem id='set-bucket-1' label='Bucket 1' oncommand="InstaBucket.onMenuSetBucket(1);"/>
+          <menuitem id='set-bucket-2' label='Bucket 2' oncommand="InstaBucket.onMenuSetBucket(2);"/>
+          <menuitem id='set-bucket-3' label='Bucket 3' oncommand="InstaBucket.onMenuSetBucket(3);"/>
+        </menupopup>
+      </menulist>
+      -->
+
+      <menuseparator/>
+
+      <menuitem id='manually-check-bucket' label='Open URL to Check Bucket' oncommand="InstaBucket.onMenuCheckBucket();"/>
+
+<!--      <menuitem id='manually-enter-id' label='Enter Experiment ID' oncommand="InstaBucket.onMenuIDEnter();"/> -->
+
+      <menuitem id='change-group' label='Change Experiment Group' oncommand="InstaBucket.onMenuChangeGroup();"/>
+
+      <menuitem id='full-get-bucket-url' label='Show URL to force bucket' oncommand="InstaBucket.onMenuGetBucketUrl();"/>
+
+      <menuseparator/>
+
+      <menuitem id='full-hide-experiment' label='Hide this experiment' oncommand="InstaBucket.onMenuHideExperiment();"/>
+
+      <menuseparator/>
+
+      <!-- false == not using a context menu -->
+
+      <menuitem id='full-set-bucket-0' label='Bucket 0' oncommand="InstaBucket.onMenuSetBucket(0, false);"/>
+      <menuitem id='full-set-bucket-1' label='Bucket 1' oncommand="InstaBucket.onMenuSetBucket(1, false);"/>
+      <menuitem id='full-set-bucket-2' label='Bucket 2' oncommand="InstaBucket.onMenuSetBucket(2, false);"/>
+      <menuitem id='full-set-bucket-3' label='Bucket 3' oncommand="InstaBucket.onMenuSetBucket(3, false);"/>
+
+<!--      <menuitem id='full-get-omniture' label='Get Omniture' oncommand="InstaBucket.onMenuGetOmniture();"/> -->
+      <menuseparator/>
+      <checkbox id='full-set-refresh-after' label='Refresh Page after set bucket'/>
+
+    </popup>
+  </popupset>
+
+
+  <popupset>
+    <popup id="bucket-context-menu" position="before_start" style="background:Menu;border:ridge">
+
+      <!-- true == yes using a context menu -->
+
+      <menuitem id='context-set-bucket-0' label='Bucket 0' oncommand="InstaBucket.onMenuSetBucket(0, true);"/>
+      <menuitem id='context-set-bucket-1' label='Bucket 1' oncommand="InstaBucket.onMenuSetBucket(1, true);"/>
+      <menuitem id='context-set-bucket-2' label='Bucket 2' oncommand="InstaBucket.onMenuSetBucket(2, true);"/>
+      <menuitem id='context-set-bucket-3' label='Bucket 3' oncommand="InstaBucket.onMenuSetBucket(3, true);"/>
+
+<!--      <menuitem id='context-get-bucket-url' label='Get Url' oncommand="InstaBucket.onMenuGetBucketUrl();"/> -->
+<!--      <menuitem id='context-get-omniture' label='Get Omniture' oncommand="InstaBucket.onMenuGetOmniture();"/>  -->
+<!--      <menuseparator/>
+      <checkbox id='context-set-refresh-after' label='Refresh Page after set bucket'/> -->
+
+    </popup>
+  </popupset>
+
+      <!--
+      <menuseparator/>
+      <menuitem id='trip' label="Trip Advisor"      oncommand="InstaBucket.watchExp('TRIP')"/>
+      <menuitem id='photo' label="More Photos"      oncommand="InstaBucket.watchExp('PHOTO')"/>
+      <menuitem id='book' label="Book now Overlays" oncommand="InstaBucket.watchExp('BOOK')"/>
+      <menuitem id='drr' label="DRR Messaging"      oncommand="InstaBucket.watchExp('DRR')"/>
+      <menuitem id='video' label="Videos"           oncommand="InstaBucket.watchExp('VIDEO')"/>
+      <menuitem id='icon' label="Trip Icon"         oncommand="InstaBucket.watchExp('ICON')"/>
+      <menuitem id='price' label="Book Prices"      oncommand="InstaBucket.watchExp('PRICE')"/>
+      -->
+
+  <!-- todo: dynamically add status bar panels
+          context="bucketmenu1"
+        context="bucketmenu2"
+
+        nah, we know which has the menu via...
+        var nodeId = document.popupNode.id;
+
+    context="bucket-context-menu"
+    onmousedown="InstaBucket.on_open_small_menu();"
+
+    https://developer.mozilla.org/en/XUL/PopupGuide/OpenClose#Opening_a_Popup
+
+    https://developer.mozilla.org/en/XUL/Events
+
+    menu colors:      Menu
+    https://developer.mozilla.org/en/CSS/color_value
+
+    todo: why does oncommand not work with status bar items?
+    on command is tied to right click.
+
+    oncontextmenu =
+    oncommand = right mouse click and left mouse click
+    onclick = right mouse click and left mouse click
+    context = right mouse click
+   -->
+
+
+  <statusbarpanel id="insta-bucket-0"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(0);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(0);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+  <statusbarpanel id="insta-bucket-1"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(1);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(1);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+  <statusbarpanel id="insta-bucket-2"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(2);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(2);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+  <statusbarpanel id="insta-bucket-3"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(3);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(3);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+  <statusbarpanel id="insta-bucket-4"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(4);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(4);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+  <statusbarpanel id="insta-bucket-5"
+    label=""
+    oncontextmenu="InstaBucket.on_open_full_menu(5);"
+    oncommand=""
+    onclick="InstaBucket.on_open_small_menu(5);"
+    context=""
+    crop="center"
+    style="border:inset"
+  />
+
+<!--
+    context="bucket-context-menu"
+    <statusbarpanel id="insta-bucket-2"
+        label=""
+    />
+-->
+
+<!--
+  <script type="application/x-javascript" src="chrome://instabucket/content/instabucket.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/bucket_capture.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/exp_current.js" />
+  <script type="application/x-javascript" src="chrome://instabucket/content/debug.js" />
+  -->
+</statusbar>
+</overlay>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<prefwindow id="show-url-popup"
+     title="Show URL"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     onload="on_show_url_window_load();"
+     ondialogaccept="on_show_url_window_accept();">
+
+<prefpane id="id-show-url-pref-pane" label="Copy Url Text" onpaneload="on_show_url_pane_load()">
+
+  <script type="application/x-javascript" src="chrome://instabucket/content/popup_show_url.js" />
+
+  <groupbox id="group-box-one">
+  <caption label="emain URL to paste in browser" />
+
+    <textbox id="show-url-textbox" placeholder="http://www.expedia.com"
+        flex='0' width="500" maxlength="760"/>
+
+    <button id="show-url-copy-to-clipboard" label='Copy to Clipboard'
+        oncommand='on_show_url_copy_to_clipboard();' icon='copy' flex='0' />
+
+  </groupbox>
+
+  <groupbox id="group-box-one">
+  <caption label="e3 URL to paste in browser" />
+
+    <textbox id="show-url-e3-textbox" placeholder="http://www.expedia.com"
+        flex='0' width="500" maxlength="760"/>
+
+    <button id="show-url-e3-copy-to-clipboard" label='Copy e3 to Clipboard'
+        oncommand='on_show_url_e3_copy_to_clipboard();' icon='copy' flex='0' />
+
+  </groupbox>
+
+</prefpane>
+
+</prefwindow>

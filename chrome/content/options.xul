@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!--
+
+todo: make the tabs above the dialog visible
+it is only showing when opened via add-on manager
+when opened via right click in status bar,
+then the tabs are not visible
+maybe add a next / previous button
+how to invoke dialog as the add on manager does?
+
+-->
+<prefwindow id="most-basic-prefs"
+     title="most_basic Options"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     onload="on_window_load();"
+     buttonlabelextra1='close'>
+
+
+    <prefpane id="basicsPane" label="basics" flex="1"
+        onpaneload="init_basics_pane();">
+
+    <hbox>
+
+    <vbox>
+        <button id="most-basic-button" label="click me" oncommand="button_click();" />
+    </vbox>
+
+    </hbox>
+
+    </prefpane>
+
+<script type="application/x-javascript" src="chrome://most_basic/content/options.js" />
+
+</prefwindow>
+

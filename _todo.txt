@@ -1,0 +1,16 @@
+
+make the most basic extension
+
+has toolbar
+has sidebar
+
+with edit box
+with button
+
+calls a script and traces something out.
+
+
+0. make a copy of insta bucket
+1. get it installed with some marking,
+
+

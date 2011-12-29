@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<prefwindow id="group-popup"
+     title="Insta Bucket Group Select"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     onload="on_window_load();"
+     ondialogaccept="on_window_accept();">
+
+<prefpane id="id-one-popup" label="Experiment Settings" onpaneload="on_pane_load()">
+
+  <script type="application/x-javascript" src="chrome://most_basic/content/group_popup.js" />
+
+  <groupbox id="group-box-one">
+  <caption label="Watch These Experiments" />
+
+    <hbox>
+
+    <!-- todo: change to a list box, showing choices directly -->
+      <menulist label="Infosite" id="grouping-dropdown" editable="true" oncommand="on_select_group();">
+        <menupopup>
+          <menuitem label="Infosite" selected="true"/>
+          <menuitem label="Hotel Search"/>
+          <menuitem label="Flights"/>
+          <menuitem label="Packages"/>
+        </menupopup>
+      </menulist>
+
+    </hbox>
+
+
+  </groupbox>
+
+</prefpane>
+
+</prefwindow>
