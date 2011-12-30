@@ -11,17 +11,17 @@
         customizable="true" id="most-basic-toolbar">
 
 <!--        <toolbarbutton label="dlg" id="toolbar-hotel-open-sidebar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" /> -->
-        <toolbarbutton label="open side bar" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
+        <toolbarbutton label="Media Solutions Shortcuts" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
         <toolbarbutton label="GO" id="toolbar-basic-go" oncommand="on_menu_go();" />
 
-        <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="hello!"/>
+        <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="Expedia.com"/>
 
         <menulist label="Some Names" minwidth="90" flex="1" id="toolbar-basic-choice" oncommand="on_menu_basic_change(); on_basic_menu_select('toolbar-basic-choice');" >
           <menupopup>
-           <menuitem label="first" value='54481' selected="true"/>
-           <menuitem label="second" value='201272'/>
-           <menuitem label="third" value='198225'/>
-           <menuitem label="fourth" value='14423'/>
+           <menuitem label="AdManager Production"  oncommand="openUILinkIn('http://www.cnn.com', 'tab')" value='1' selected="true"/>
+           <menuitem label="AdManager Lab (HF01, RC01, etc.)"  oncommand="openUILinkIn('http://www.cnn.com', 'tab')" value='2'/>
+           <menuitem label="AdManager Lab(Ads01)"  oncommand="openUILinkIn('http://www.cnn.com', 'tab')" value='3'/>
+           <menuitem label="DoubleClick Support"  oncommand="openUILinkIn('http://www.cnn.com', 'tab')" value='4'/>
          </menupopup>
         </menulist>
 
@@ -63,7 +63,7 @@ function show_toolbar(event)
                  type="checkbox"
                  group="sidebar"
                  sidebarurl="chrome://most_basic/content/basic-sidebar.xul"
-                 sidebartitle="basic sidebar title"
+                 sidebartitle="Expedia Media Solutions - Ads"
                  oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
   </broadcasterset>
 
