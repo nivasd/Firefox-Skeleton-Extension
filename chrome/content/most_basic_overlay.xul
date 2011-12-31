@@ -2,6 +2,7 @@
 
 <overlay id="most-basic--overlay" onload="populate_menus();" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="most_basic_overlay.js"/>
+<?xml-stylesheet href="style.css" type="text/css"?>
 
 <toolbox id="navigator-toolbox">
 
@@ -11,22 +12,31 @@
         customizable="true" id="most-basic-toolbar">
 
 <!--        <toolbarbutton label="dlg" id="toolbar-hotel-open-sidebar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" /> -->
-        <toolbarbutton label="open side bar" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
-        <toolbarbutton label="GO" id="toolbar-basic-go" oncommand="on_menu_go();" />
-
-        <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="hello!"/>
-
-        <menulist label="Some Names" minwidth="90" flex="1" id="toolbar-basic-choice" oncommand="on_menu_basic_change(); on_basic_menu_select('toolbar-basic-choice');" >
+        <toolbarbutton label="Open Ad Panel" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
+<!--        <toolbarbutton label="GO" id="toolbar-basic-go" oncommand="on_menu_go();" />  
+        
+        <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="Expedia.com"/> -->
+        <label value="MediaSolutions Shortcuts"/> 
+<menulist label="Categories" minwidth="90" flex="1" id="categories" oncommand="on_basic_menu_select('categories');" >
           <menupopup>
-           <menuitem label="first" value='54481' selected="true"/>
-           <menuitem label="second" value='201272'/>
-           <menuitem label="third" value='198225'/>
-           <menuitem label="fourth" value='14423'/>
+           <menuitem label="Production DoubleClick Components"  value='1' selected="true"/>
+           <menuitem label="Lab DoubleClick Components"  value='2'/>
+           <menuitem label="Monitoring Tools"  value='3'/>
+           <menuitem label="MediaSolutions Tools"  value='4'/>
+           <menuitem label="Support" value='5'/>
+         </menupopup>
+        </menulist>
+	<menulist label="Some Names" minwidth="90" flex="1" id="toolbar-basic-choice" oncommand="on_second_menu_change('toolbar-basic-choice');" >
+          <menupopup>
+           <menuitem label="AdManager"  oncommand="openUILinkIn('http://admanager.idx.expedmz.com:7001/AdManagerWebStart/', 'tab')" value='1' selected="true"/>
+           <menuitem label="AdInsight"  oncommand="openUILinkIn('http://adreports.expedia.com', 'tab')" value='2'/>
+           <menuitem label="DoubleClick Object Locator"  oncommand="openUILinkIn('http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator', 'tab')" value='3'/>
          </menupopup>
         </menulist>
 
     </toolbar>
 </toolbox>
+
 
 <script>
 function show_toolbar(event)
@@ -63,7 +73,7 @@ function show_toolbar(event)
                  type="checkbox"
                  group="sidebar"
                  sidebarurl="chrome://most_basic/content/basic-sidebar.xul"
-                 sidebartitle="basic sidebar title"
+                 sidebartitle="Expedia Media Solutions - Ads"
                  oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
   </broadcasterset>
 
