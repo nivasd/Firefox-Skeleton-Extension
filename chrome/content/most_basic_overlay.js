@@ -71,8 +71,16 @@ function on_second_menu_change(idval)
    var n = document.getElementById(idval).value; 
    dump(n);  
    var pattern = /mailto/; 
+
+   var win = Components.classes['@mozilla.org/appshell/window-mediator;1']
+                  .getService(Components.interfaces.nsIWindowMediator)
+                  .getMostRecentWindow('navigator:browser');
+
+
    if (pattern.test(n)) {
-      window.open(n, 'emailWindow');  } 
+      window.open(n);  } 
    else {
-      window.open(n, '_newtab');  }  
+      win.gBrowser.selectedTab = win.gBrowser.addTab(n);
+   }
+
 }
