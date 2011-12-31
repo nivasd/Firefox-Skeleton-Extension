@@ -21,7 +21,7 @@ function on_basic_menu_select(idval) {
    switch (n)
    {
      case 1: 
-             alert("hello Nivas");  
+             //alert("hello Nivas");  
 	     break; 
      case 2: 
              break; 
