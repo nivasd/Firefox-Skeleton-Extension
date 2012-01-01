@@ -78,7 +78,7 @@ function on_second_menu_change(idval)
 
 
    if (pattern.test(n)) {
-      window.open(n);  } 
+      window.open(n, '_blank');  } 
    else {
       win.gBrowser.selectedTab = win.gBrowser.addTab(n);
    }
