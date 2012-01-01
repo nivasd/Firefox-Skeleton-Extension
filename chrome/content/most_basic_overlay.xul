@@ -28,9 +28,9 @@
         </menulist>
 	<menulist label="Some Names" minwidth="90" flex="1" id="toolbar-basic-choice" oncommand="on_second_menu_change('toolbar-basic-choice');" >
           <menupopup>
-           <menuitem label="AdManager"  oncommand="openUILinkIn('http://admanager.idx.expedmz.com:7001/AdManagerWebStart/', 'tab')" value='http://admanager.idx.expedmz.com:7001/AdManagerWebStart/' selected="true"/>
-           <menuitem label="AdInsight"  oncommand="openUILinkIn('http://adreports.expedia.com', 'tab')" value='http://adreports.expedia.com'/>
-           <menuitem label="DoubleClick Object Locator"  oncommand="openUILinkIn('http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator', 'tab')" value='http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator'/>
+           <menuitem label="AdManager"  value='http://admanager.idx.expedmz.com:7001/AdManagerWebStart/' selected="true"/>
+           <menuitem label="AdInsight"   value='http://adreports.expedia.com'/>
+           <menuitem label="DoubleClick Object Locator"  value='http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator'/>
          </menupopup>
         </menulist>
 
