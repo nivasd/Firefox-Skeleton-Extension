@@ -112,7 +112,7 @@ function update_progress(text)
     {
         dump(text + '\n');
         var edit = document.getElementById('debug-progress');
-        edit.value = text;
+        edit.value = edit.value + "\n" + text;
     }
     catch(e)
     {
@@ -151,6 +151,24 @@ function basic_test()
     }
 }
 
+/*
+function printPage() {
+    print(); 
+}
+
+
+
+function printIframe(id)
+{
+    var iframe = document.frames ? document.frames[id] : document.getElementById(id);
+    var ifWin = iframe.contentWindow || iframe;
+    iframe.focus();
+    ifWin.printPage();
+    return false;
+}
+
+*/
+
 function get_current_html()
 {
     var html = '';
@@ -161,7 +179,35 @@ function get_current_html()
                             .getMostRecentWindow("navigator:browser");
         var currBrowser = currentWindow.getBrowser();
         var contentDoc = currBrowser.contentDocument;
-        html = contentDoc.body.innerHTML;
+        update_progress("Nivas"); 
+        //update_progress(frames[5].contentWindow.document.body.innerHTML); 
+        //update_progress(window.frames[5].document.body.innerHTML); 
+        //update_progress(currBrowser.frames[5].contentWindow.document.body.innerHTML); 
+     
+	//Get iframes 
+        var iframes = currBrowser.contentDocument.getElementsByTagName("iframe");
+        for (var i=0; i < iframes.length; i++) { 
+               try {
+	          var check_iframe = iframes[i].contentWindow.document.body.innerHTML; 
+               } catch (e) {
+		      update_progress("Error: "); 
+                      update_progress(e);
+                      update_progress(i);
+                      continue;  	
+               }  
+               //iframe found and it can be accessed. 
+               if (check_iframe) {
+                  html=html + check_iframe;
+		  update_progress(check_iframe); 							
+	       }	
+	       		
+               update_progress(i);     
+
+	}
+        update_progress("Excellent!!!!"); 
+        //update_progress(frames[5].contentDoc.body.innerHTML); 
+        //alert(window.frames[5].document.body.innerHTML);  
+        html = contentDoc.body.innerHTML + html;
     }
     catch(e)
     {
