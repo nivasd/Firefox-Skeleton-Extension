@@ -1,4 +1,30 @@
-.label_middle {
-   vertical-align: middle; 
-   color: red; 
+/* basic-sidebar */ 
+
+vbox#ad-panel-box { 
+   background-color: #1E90FF; 
+}
+
+vbox#ad-panel-box-top { 
+   background-color: #1E90FF; 
+}
+
+label#ad_listings {
+    font-size: 18px; 
+    color: white;
+     
+
+}
+
+button#rd {
+  background-color: red;
+  color: white;
+}
+
+
+
+/*most basic overlay */ 
+
+toolbar#most-basic-toolbox {
+   background-color: #1E90FF; 
+
 }

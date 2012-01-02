@@ -1,12 +1,25 @@
 dump('basic sidebar js file begin\n');
 
+//Global Variables
+var global_div_source=[]; 
+
 
 function parse_html_text()
 {
     try
     {
-        update_progress('called html parse');
+        //Create textbox to add all information
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+        var textbox_item = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
+        textbox_item.setAttribute('height', '200');
+        textbox_item.setAttribute('id', 'results');
+        textbox_item.setAttribute('multiline', 'true');
+        //item.setAttribute("label", aLabel);
+        document.getElementById('ad-panel-box-top').appendChild(textbox_item); 
 
+
+        update_progress('called html parse');
+        //Get source of page
         var current_html = get_current_html();
         dump('html size: ' + current_html.length + '\n');
 /*
@@ -34,7 +47,10 @@ function parse_html_text()
             }
 
             var found_div = regex_match[0];
-            show_parse_result( text_index, found_div );
+            //store div; 
+            global_div_source[text_index]= found_div; 
+            create_adbox(text_index, found_div);  
+            //show_parse_result( text_index, found_div );
             text_index++;
         }
     }
@@ -45,13 +61,18 @@ function parse_html_text()
 }
 
 
-function parse_html_cms()
+
+
+
+function parse_html_cms(cms_text)
 {
     try
     {
         update_progress('called html parse cms');
 
-        var current_html = get_current_html();
+        //var current_html = get_current_html();
+        var current_html = cms_text;
+        //alert(current_html);  
         dump('html size: ' + current_html.length + '\n');
 /*
 <!-- v.1n --><!-- 2.0.1.68 /html.cms/TPID=1&EAPID=0000&PLACEMENT=INTERSTITIAL&LOCATION=HOTELS&SUBLOCATION=RESULTS&SECURE=0&LANGID=1033&tile=e56700b0-eb07-4f8c-a4a7-dca4f2610919&IPGEO=819.BELLEVUE&ip=208.95.100.4&USERTYPE=SHOPPER&EMAIL=YES -->
@@ -63,21 +84,23 @@ function parse_html_cms()
         // regex with \s\S will match white space and non white space
         // including line breaks.
         // .* does not match line breaks.
-        var find_add_div_regex = /<!--[^<]*html.cms[\s\S]*<comment[\s\S]*?<\/div>/g;
-        var max_try = 50;
-        var text_index = 0;
-        while( max_try-- > 0 )
-        {
+        var find_add_div_regex = /html.cms\/([\s\S]*)\s-->/;
+        //var max_try = 50;
+        //var text_index = 0;
+        //while( max_try-- > 0 )
+        //{
             var regex_match = find_add_div_regex.exec( current_html );
-            if( null == regex_match || regex_match.length < 1 )
-            {
-                dump('found no matches');
-                break;
-            }
+            //if( null == regex_match || regex_match.length < 1 )
+            //{
+                //dump('found no matches');
+                //break;
+            //}
 
-            var found_div = regex_match[0];
-            show_parse_result( text_index, found_div );
-            text_index++;
+            var found_div = regex_match[1];
+            found_div.replace("-->.*",''); 
+            alert("Found div: " + found_div);  
+            //show_parse_result( text_index, found_div );
+            //text_index++;
 
             // pull out the key value pairs
             // /TPID=1&EAPID=0000&PLACEMENT=INTERSTITIAL&LOCATION=HOTELS&SUBLOCATION=RESULTS&SECURE=0&LANGID=1033&tile=e56700b0-eb07-4f8c-a4a7-dca4f2610919&IPGEO=819.BELLEVUE&ip=208.95.100.4&USERTYPE=SHOPPER&EMAIL=YES -->
@@ -86,6 +109,7 @@ function parse_html_cms()
             var find_cms_args = /[/&]([^=]+)=([^\s^&]+)/g;
             var max_args = 30;
             var key_value_pairs = '';
+            var params_array=[]; 
             while( max_args-- > 0 )
             {
                 var regex_match = find_cms_args.exec( found_div );
@@ -93,11 +117,17 @@ function parse_html_cms()
                 {
                     break;
                 }
+                update_progress('Regix 1: ' + regex_match[1]); 
+                update_progress('Regix 2: ' + regex_match[2]); 
+                params_array[regex_match[1]] = regex_match[2]; 
                 key_value_pairs += regex_match[1] + ' => ' + regex_match[2] + '\n';
             }
-            show_parse_result( text_index, key_value_pairs );
-            text_index++;
-        }
+            //reset params_array
+            //show_parse_result( text_index, key_value_pairs );
+            //text_index++;
+        //}
+           alert(key_value_pairs); 
+        return params_array; 
     }
     catch(e)
     {
@@ -118,6 +148,210 @@ function update_progress(text)
     {
         dump('exception: update_progress:\n' + e + '\n');
     }
+}
+
+
+function createAdLabel(text_index, placement) {
+  const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+  var item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
+  //var item = document.createElement("label"); // create a new XUL label
+  item.setAttribute('id', 'ads-box-' + text_index);
+  item.setAttribute('value', 'Ad Placement: ' + placement);
+  //item.setAttribute("label", aLabel);
+  return item;
+}
+
+
+function getTargetingParam(text_index) {
+  update_progress('get Targeting Param'); 
+  try {
+        var edit = document.getElementById('results');
+        if( !edit )
+        {
+            dump('index too large in show parse result: ' + text_index + '\n');
+            return;
+        }
+        //parse html.cms
+        var array = parse_html_cms(global_div_source[text_index]);
+        var print_array='' 
+        for (var i in array) {
+	     print_array += i + '=>' + array[i]+ '\n'; 	
+        }
+ 
+        edit.value = print_array;
+
+     
+  //const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+  //var hbox_item = document.createElementNS(XUL_NS, "hbox"); // create a new XUL label
+  //var item = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
+  //var item = document.createElement("label"); // create a new XUL label
+  //item.setAttribute('id', 'ads-textbox-' + text_index);
+  //item.setAttribute('width', '200');
+  //hbox_item.appendChild(item);  
+  //item.setAttribute("label", aLabel);
+  //return item;
+  //elem = document.getElementById('adds_helper_Sidebar'); 
+  //elem.appendChild(hbox_item); 
+  } catch (e) {
+     update_progress('getAdSource Error: ' + e); 
+  
+  } 
+
+
+}
+
+
+function getAdSource(text_index) {
+  update_progress('get Ad Source'); 
+  try {
+        var edit = document.getElementById('results');
+        if( !edit )
+        {
+            dump('index too large in show parse result: ' + text_index + '\n');
+            return;
+        }
+        edit.value = global_div_source[text_index];
+
+     
+  //const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+  //var hbox_item = document.createElementNS(XUL_NS, "hbox"); // create a new XUL label
+  //var item = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
+  //var item = document.createElement("label"); // create a new XUL label
+  //item.setAttribute('id', 'ads-textbox-' + text_index);
+  //item.setAttribute('width', '200');
+  //hbox_item.appendChild(item);  
+  //item.setAttribute("label", aLabel);
+  //return item;
+  //elem = document.getElementById('adds_helper_Sidebar'); 
+  //elem.appendChild(hbox_item); 
+  } catch (e) {
+     update_progress('getAdSource Error: ' + e); 
+  
+  } 
+
+
+}
+
+//create buttons
+
+function create_buttons(text_index) {
+  try {
+  var elem = document.getElementById('ad-panel-box');
+  const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+  var i = 0; 
+  for (i=0; i<5; i++){  
+    var item = document.createElementNS(XUL_NS, "button"); // create a new XUL label
+    //var item = document.createElement("label"); // create a new XUL label
+    switch (i) {
+	case 0: 
+                item.setAttribute('id', 'ads-button-' + text_index + '-highlight');
+                item.setAttribute('label', 'Highlight Ad'); 
+                break; 
+         
+        case 1: 
+                item.setAttribute('id', 'ads-button-' + text_index + '-order');
+                item.setAttribute('label', 'Order Information'); 
+                break; 
+
+        case 2: 
+                item.setAttribute('id', 'ads-button-' + text_index + '-adsource');
+                item.setAttribute('label', 'Ad Source'); 
+                item.setAttribute('oncommand', 'getAdSource(' + text_index + ')'); 
+                break; 
+
+        case 3: 
+                item.setAttribute('id', 'ads-button-' + text_index + '-targetting');
+                item.setAttribute('oncommand', 'getTargetingParam(' + text_index + ')'); 
+                item.setAttribute('label', 'Targeting Parameters'); 
+                break;
+        case 4: 
+                item.setAttribute('id', 'ads-button-' + text_index + '-advanced');
+                item.setAttribute('label', 'Advanced'); 
+                break;
+	default: 
+                item.setAttribute('id', 'ads-button-error');
+                item.setAttribute('label', 'Blank'); 
+
+    }
+    //Set flex to 1
+    item.setAttribute('flex', '1'); 
+    item.setAttribute('width', '120'); 
+    //If not divisble by 2 add to new hbox. 
+    if ((i%2)==0) {
+         var hbox_button = document.createElementNS(XUL_NS, "hbox"); 
+         update_progress('Digit: ' + 'ads-hbox-' + text_index + '-' + i );  
+         hbox_button.setAttribute('id', 'ads-hbox-' + text_index + '-' + i);
+         hbox_button.appendChild(item); 
+         elem.appendChild(hbox_button);
+         
+    } else {
+        update_progress('Digit Else: ' + 'ads-hbox-' + text_index + '-' + (i-1));  
+        var hbox_button = document.getElementById('ads-hbox-' + text_index + '-' + (i-1));
+        hbox_button.appendChild(item);  
+    }
+
+
+    //elem.appendChild(item);
+    
+    
+       
+    //item.setAttribute('value', 'Ad Button: ' + text_index + placement);
+    //item.setAttribute("label", aLabel);
+  }
+  
+  //return item;
+  } catch (e) {
+      update_progress('createButtons: ' + e); 
+        
+
+  }
+}
+
+
+
+
+/*
+var popup = document.getElementById("myPopup"); // a <menupopup> element
+var first = createMenuItem("First item");
+var last = createMenuItem("Last item");
+popup.insertBefore(first, popup.firstChild);
+popup.appendChild(last);
+*/
+
+function create_adbox(text_index, found_div) {
+   //Get key value pairs
+   //Get placement
+   //Get source of page   
+   //Add menulist
+   //Add 4 buttons   
+
+  
+   try {
+      var nodeLabel = createAdLabel(text_index, text_index);
+      //node.setAttribute(id, 'ads-box-' + text_index);
+      //node.setAttribute(value, 'Ad Placement: ads-box-' + text_index);
+    } catch(e) {
+      update_progress('Failed 1st part: ' + e); 
+    }
+    try {
+      //if (text_index!='0') { 
+      //  alert("Not 0: " + text_index); 
+      //   curr_elem_id = text_index-1; 
+      //   alert("Curr Elem ID: " + curr_elem_id); 
+      //   var elem = document.getElementById('ads-box-' + curr_elem_id);
+      //} else {
+         //alert("Gett " + text_index); 
+        var elem = document.getElementById('ad-panel-box');
+	elem.style.overflowY="auto";  	
+      //}
+      elem.appendChild(nodeLabel);
+      create_buttons(text_index); 
+    } catch(e) {
+      update_progress('Error: ' + e); 
+    }
+     
+
 }
 
 function show_parse_result( text_index, text)
