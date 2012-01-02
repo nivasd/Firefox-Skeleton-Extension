@@ -17,7 +17,10 @@
   <script src="basic-sidebar.js"/>
   <vbox id="ad-panel-box-top" flex="1">
        <button id="parse-html-button" oncommand="parse_html_text();" label="Show Ad Information" height="20"/>
-       <label id="ad_listings" value="Ad Listings" />
+      <vbox id="helper">  
+       <label id="ad_statistics" value = "Ad Statistics"/>
+       </vbox>
+       <label id="ad_listings" value="Ad Placement Information" />
   </vbox> 
   <vbox id="ad-panel-box" flex="1">
 <!--    <button id="basic-test-button" oncommand="alert('parse click'); basic_test();" label="basic test"/>  --> 

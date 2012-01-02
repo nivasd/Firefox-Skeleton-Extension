@@ -2,6 +2,7 @@ dump('basic sidebar js file begin\n');
 
 //Global Variables
 var global_div_source=[]; 
+var global_target_param=[]; 
 
 
 function parse_html_text()
@@ -15,7 +16,7 @@ function parse_html_text()
         textbox_item.setAttribute('id', 'results');
         textbox_item.setAttribute('multiline', 'true');
         //item.setAttribute("label", aLabel);
-        document.getElementById('ad-panel-box-top').appendChild(textbox_item); 
+        document.getElementById('ad-panel-box').appendChild(textbox_item); 
 
 
         update_progress('called html parse');
@@ -49,10 +50,30 @@ function parse_html_text()
             var found_div = regex_match[0];
             //store div; 
             global_div_source[text_index]= found_div; 
+            //Store parameters
+            var array = parse_html_cms(global_div_source[text_index]);
+            global_target_param[text_index]=array; 
             create_adbox(text_index, found_div);  
             //show_parse_result( text_index, found_div );
             text_index++;
         }
+        //Create Statistics for Ad Placements
+        //var ad_statistics = document.getElementById('ad_statistics'); 
+        //ad_statistics.value = "Ad Statistics"; 
+        var adstat_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
+  //var item = document.createElement("label"); // create a new XUL label
+        adstat_item.setAttribute('value', 'Total No. of Ads: ' + global_div_source.length);
+        document.getElementById('helper').appendChild(adstat_item); 
+        var total_placements = 'Ad Placements: ';  
+        for (var i=0; i<global_target_param.length; i++) {
+             total_placements+=global_target_param[i]['PLACEMENT']+' ';  
+        }
+        var adstat_placements = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
+        adstat_placements.setAttribute('value', total_placements);
+        document.getElementById('helper').appendChild(adstat_placements); 
+         
+        
+         
     }
     catch(e)
     {
@@ -97,8 +118,9 @@ function parse_html_cms(cms_text)
             //}
 
             var found_div = regex_match[1];
-            found_div.replace("-->.*",''); 
-            alert("Found div: " + found_div);  
+            var found_div_result = found_div.split('\s'); 
+            found_div = found_div_result[0];  
+            update_progress("Found div: " + found_div);  
             //show_parse_result( text_index, found_div );
             //text_index++;
 
@@ -126,7 +148,7 @@ function parse_html_cms(cms_text)
             //show_parse_result( text_index, key_value_pairs );
             //text_index++;
         //}
-           alert(key_value_pairs); 
+           update_progress(key_value_pairs); 
         return params_array; 
     }
     catch(e)
@@ -151,11 +173,17 @@ function update_progress(text)
 }
 
 
-function createAdLabel(text_index, placement) {
+function createAdLabel(text_index) {
   const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
   var item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
   //var item = document.createElement("label"); // create a new XUL label
   item.setAttribute('id', 'ads-box-' + text_index);
+  if (global_target_param[text_index]['PLACEMENT']) {
+	var placement = global_target_param[text_index]['PLACEMENT'];
+   
+  } else {
+       var placement = 'Placement not found'; 
+  } 
   item.setAttribute('value', 'Ad Placement: ' + placement);
   //item.setAttribute("label", aLabel);
   return item;
@@ -179,6 +207,7 @@ function getTargetingParam(text_index) {
         }
  
         edit.value = print_array;
+        setAdTitle(text_index); 
 
      
   //const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -200,6 +229,25 @@ function getTargetingParam(text_index) {
 
 }
 
+function setAdTitle(text_index) {
+   try {
+       if (global_target_param[text_index]['PLACEMENT']) {
+	 var placement = global_target_param[text_index]['PLACEMENT'];
+   
+       } else {
+         var placement = 'Placement not found'; 
+       } 
+
+       document.getElementById('ad_listings').value = 'Ad Placement: ' + placement;  
+
+
+   } catch (e) {
+        update_progress("setAdTitle Error: " + e); 
+
+   }
+
+}
+
 
 function getAdSource(text_index) {
   update_progress('get Ad Source'); 
@@ -211,6 +259,7 @@ function getAdSource(text_index) {
             return;
         }
         edit.value = global_div_source[text_index];
+        setAdTitle(text_index); 
 
      
   //const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -328,7 +377,7 @@ function create_adbox(text_index, found_div) {
 
   
    try {
-      var nodeLabel = createAdLabel(text_index, text_index);
+      var nodeLabel = createAdLabel(text_index);
       //node.setAttribute(id, 'ads-box-' + text_index);
       //node.setAttribute(value, 'Ad Placement: ads-box-' + text_index);
     } catch(e) {
