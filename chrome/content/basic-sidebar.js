@@ -2,7 +2,11 @@ dump('basic sidebar js file begin\n');
 
 //Global Variables
 var global_div_source=[]; 
+var global_adid=[];  
 var global_target_param=[]; 
+var global_div_id=[];
+var global_iframe_window=[];             
+var global_html_cms=[]; 
 
 
 function parse_html_text()
@@ -16,7 +20,7 @@ function parse_html_text()
         textbox_item.setAttribute('id', 'results');
         textbox_item.setAttribute('multiline', 'true');
         //item.setAttribute("label", aLabel);
-        document.getElementById('ad-panel-box').appendChild(textbox_item); 
+        document.getElementById('ad-info-box').appendChild(textbox_item); 
 
 
         update_progress('called html parse');
@@ -35,7 +39,8 @@ function parse_html_text()
         // regex with \s\S will match white space and non white space
         // including line breaks.
         // .* does not match line breaks.
-        var find_add_div_regex = /<div id="id_ad[\s\S]*?<\/div>/g;
+        //var find_add_div_regex = /<div id="id_ad[\s\S]*?<\/div>/g;
+        var find_add_div_regex = /<div id="id_ad[\s\S]*?<\/comment>/g;
         var max_try = 50;
         var text_index = 0;
         while( max_try-- > 0 )
@@ -48,10 +53,19 @@ function parse_html_text()
             }
 
             var found_div = regex_match[0];
+            //Store adid - comment 
+            var comment_regex = /comment type="id" value="(\d+)"/;
+            var comment_match = comment_regex.exec(found_div); 
+            global_adid[text_index] = comment_match[1];  
             //store div; 
             global_div_source[text_index]= found_div; 
+            //Store Div Id
+            div_id_regex = /(id_ad.*)\"[\s+]style/;
+            var regex_match_div = div_id_regex.exec(found_div); 
+            global_div_id[text_index]=regex_match_div[1];             
+
             //Store parameters
-            var array = parse_html_cms(global_div_source[text_index]);
+            var array = parse_html_cms(global_div_source[text_index], text_index);
             global_target_param[text_index]=array; 
             create_adbox(text_index, found_div);  
             //show_parse_result( text_index, found_div );
@@ -85,7 +99,7 @@ function parse_html_text()
 
 
 
-function parse_html_cms(cms_text)
+function parse_html_cms(cms_text, text_index)
 {
     try
     {
@@ -132,18 +146,30 @@ function parse_html_cms(cms_text)
             var max_args = 30;
             var key_value_pairs = '';
             var params_array=[]; 
+
+            //Get TPID Value - Special matching case
+            var find_cms_tpid = /(TPID)=([^\s^&]+)/;
+            var regex_cms_tpid = find_cms_tpid.exec(found_div); 
+            params_array[regex_cms_tpid[1]] = regex_cms_tpid[2]; 
+            key_value_pairs += regex_cms_tpid[1] + '=' + regex_cms_tpid[2] + '&';
+             
+
+	    //Get rest of the matching expressions 
             while( max_args-- > 0 )
             {
                 var regex_match = find_cms_args.exec( found_div );
-                if( null == regex_match || regex_match.length < 3 )
+                //if( null == regex_match || regex_match.length < 3 )
+                if( null == regex_match)
                 {
                     break;
                 }
                 update_progress('Regix 1: ' + regex_match[1]); 
                 update_progress('Regix 2: ' + regex_match[2]); 
                 params_array[regex_match[1]] = regex_match[2]; 
-                key_value_pairs += regex_match[1] + ' => ' + regex_match[2] + '\n';
+                //key_value_pairs += regex_match[1] + ' => ' + regex_match[2] + '\n';
+                key_value_pairs += regex_match[1] + '=' + regex_match[2] + '&';
             }
+            global_html_cms[text_index]=key_value_pairs; 
             //reset params_array
             //show_parse_result( text_index, key_value_pairs );
             //text_index++;
@@ -200,7 +226,7 @@ function getTargetingParam(text_index) {
             return;
         }
         //parse html.cms
-        var array = parse_html_cms(global_div_source[text_index]);
+        var array = parse_html_cms(global_div_source[text_index], text_index);
         var print_array='' 
         for (var i in array) {
 	     print_array += i + '=>' + array[i]+ '\n'; 	
@@ -247,6 +273,177 @@ function setAdTitle(text_index) {
    }
 
 }
+
+
+function highlightAd(text_index) {
+   update_progress('function highlight Ad'); 
+   try {
+       var currentWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                            .getService(Components.interfaces.nsIWindowMediator)
+                            .getMostRecentWindow("navigator:browser");
+       var currBrowser = currentWindow.getBrowser();
+       var contentDoc = currBrowser.contentDocument;
+       //alert(global_div_id[text_index]);
+        
+       element = contentDoc.getElementById(global_div_id[text_index]);
+       if (element==null) {
+         //alert("Entering null loop"); 
+	for (var i =0; i<global_iframe_window.length; i++) {
+		element = global_iframe_window[i].document.getElementById(global_div_id[text_index]); 
+                if (element!=null){
+			//alert("Element found!"); 
+                        break; 
+ 		}
+                //alert(global_iframe_window[i].document.body.innerHTML);
+        }
+
+       }       
+
+
+ 
+       //element.style.backgroundColor = "#FDFF47";
+       element.style.border = "5px solid red";
+       setAdTitle(text_index); 
+
+   } catch (e) {
+     update_progress('Highlight Ad Error: ' + e); 
+   } 
+
+}
+
+
+
+function getAdvanced(text_index) {
+  try {
+      var win = Components.classes['@mozilla.org/appshell/window-mediator;1']
+                  .getService(Components.interfaces.nsIWindowMediator)
+                  .getMostRecentWindow('navigator:browser');
+     
+      //Get current URL 
+      var currBrowser = win.getBrowser(); 
+      var currURL = currBrowser.currentURI.spec; 
+     
+   
+      //var url_split = currURL.split('\/'); 
+ 
+      match_ads01 = /ads01.sb.karmalab.net/; 
+      match_lab = /sb.karmalab.net/;
+      match_ppe = /expediaweb/; 
+      var server='';
+      if (match_ads01.exec(currURL)) {
+         server = 'http://adsvip.ads01.sb.karmalab.net/html.cms/'     
+      } else if (match_lab.exec(currURL)) {
+         server = 'http://adsvip.ads01.sb.karmalab.net/html.cms/'     
+      } else if (match_ppe.exec(currURL)) {
+         server = 'http://ads.expedia.com/html.cms/'     
+      } else {
+         server = 'http://ads.expedia.com/html.cms/'     
+
+      } 
+ 
+      //var server = url_split[2];     
+      //alert("Server: " + server); 
+      win.gBrowser.selectedTab = win.gBrowser.addTab(server + global_html_cms[text_index] + 'params.styles=trace');
+
+
+
+       setAdTitle(text_index); 
+  } catch(e) {
+	update_progress('GetAdvanced Error: ' + e); 
+
+
+  }
+
+
+}
+
+
+function loadXMLDoc(adid)
+{  
+
+   try { 
+
+      var win = Components.classes['@mozilla.org/appshell/window-mediator;1']
+                  .getService(Components.interfaces.nsIWindowMediator)
+                  .getMostRecentWindow('navigator:browser');
+     
+      //Get current URL 
+      var currBrowser = win.getBrowser(); 
+      var currURL = currBrowser.currentURI.spec; 
+     
+   
+      //var url_split = currURL.split('\/'); 
+ 
+      match_ads01 = /ads01.sb.karmalab.net/; 
+      match_lab = /sb.karmalab.net/;
+      match_ppe = /expediaweb/; 
+      var server='';
+      if (match_ads01.exec(currURL)) {
+         server = 'http://cheldfemgr01:7001/Servlets/DCLKObjectLocator'     
+      } else if (match_lab.exec(currURL)) {
+         server = 'http://chelmgrads001:7001/Servlets/DCLKObjectLocator'     
+      } else if (match_ppe.exec(currURL)) {
+         server = 'http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator'     
+      } else {
+         server = 'http://admanager.idx.expedmz.com:7001/Servlets/DCLKObjectLocator'     
+
+      } 
+
+   var xmlhttp;
+   var html_text; 
+   var edit = document.getElementById('results');
+   xmlhttp=new XMLHttpRequest();
+   xmlhttp.onreadystatechange=function()
+   {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+         html_text = xmlhttp.responseText; 
+
+    //Get AdID
+    var adid_regex = /Ad ID\<\/TD\>\<TD\>(\d+)\<\/B\>/;
+    var adid_match = adid_regex.exec(html_text); 
+    //Get FlightID
+    var flightid_regex = /Flight ID<\/TD><TD>(\d+)<\/B>/;
+    var flightid_match = flightid_regex.exec(html_text); 
+    //Get Flight Number
+    var flightnumber_regex = /Flight Number<\/TD><TD>(\d+)<\/B>/;
+    var flightnumber_match = flightnumber_regex.exec(html_text); 
+    //Get Order Id
+    var orderid_regex = /Order ID<\/TD><TD>(\d+)<\/B>/;
+    var orderid_match = orderid_regex.exec(html_text); 
+
+    edit.value = 'Ad ID: ' + adid_match[1] + '\n' + 'Flight ID: ' + flightid_match[1] + '\n' + 'Flight Number: '  + flightnumber_match[1]+ '\n' + 'Order ID: ' + orderid_match[1];
+
+
+      }
+   }
+   xmlhttp.open("POST",server,true);
+   xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+   xmlhttp.send('idType=ad&id=' + adid + '&SUBMIT=Submit');
+   
+
+    } catch(e) {
+	alert('loadXMLDOC: ' + e); 		
+
+    } 
+
+
+}
+
+
+
+
+
+function getOrders(text_index) {
+     try {
+       loadXMLDoc(global_adid[text_index]); 
+        setAdTitle(text_index); 
+
+     } catch(e) {
+	update_progress('Error GetOrders: ' + e); 	
+     }
+}
+
 
 
 function getAdSource(text_index) {
@@ -296,11 +493,13 @@ function create_buttons(text_index) {
 	case 0: 
                 item.setAttribute('id', 'ads-button-' + text_index + '-highlight');
                 item.setAttribute('label', 'Highlight Ad'); 
+                item.setAttribute('oncommand', 'highlightAd(' + text_index + ')'); 
                 break; 
          
         case 1: 
                 item.setAttribute('id', 'ads-button-' + text_index + '-order');
                 item.setAttribute('label', 'Order Information'); 
+		item.setAttribute('oncommand', 'getOrders(' + text_index + ')'); 
                 break; 
 
         case 2: 
@@ -316,6 +515,7 @@ function create_buttons(text_index) {
                 break;
         case 4: 
                 item.setAttribute('id', 'ads-button-' + text_index + '-advanced');
+                item.setAttribute('oncommand', 'getAdvanced(' + text_index + ')'); 
                 item.setAttribute('label', 'Advanced'); 
                 break;
 	default: 
@@ -480,6 +680,7 @@ function get_current_html()
                }  
                //iframe found and it can be accessed. 
                if (check_iframe) {
+                  global_iframe_window[i]=iframes[i].contentWindow; 
                   html=html + check_iframe;
 		  update_progress(check_iframe); 							
 	       }	

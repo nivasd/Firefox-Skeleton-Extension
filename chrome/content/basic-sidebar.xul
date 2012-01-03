@@ -22,6 +22,9 @@
        </vbox>
        <label id="ad_listings" value="Ad Placement Information" />
   </vbox> 
+  <vbox id ="ad-info-box" flex="1">
+
+  </vbox>
   <vbox id="ad-panel-box" flex="1">
 <!--    <button id="basic-test-button" oncommand="alert('parse click'); basic_test();" label="basic test"/>  --> 
 <!--    <button id="parse-html-button" oncommand="parse_html_cms();" label="Parse HTML for html.cms"/> --> 
@@ -38,8 +41,8 @@
     <textbox id="parse-output-textbox-7" value="" multiline="true" width="200"/> --> 
 
   </vbox>
-    <label value="debug progress" />
-    <textbox id="debug-progress" value="" multiline="true" size="80" maxlength="1000"/>
+    <label hidden='true' value="debug progress" />
+    <textbox id="debug-progress" hidden='true' value="" multiline="true" size="80" maxlength="1000"/>
 
 </page>
 

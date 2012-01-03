@@ -16,7 +16,7 @@
         customizable="true" id="most-basic-toolbar">
 
 <!--        <toolbarbutton label="dlg" id="toolbar-hotel-open-sidebar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" /> -->
-        <toolbarbutton label="Open Ad Panel" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
+        <toolbarbutton label="Toggle Ad Panel" id="toolbar-basic-open-side-bar" oncommand="toggleSidebar('viewSidebar_hotel_deep');" />
 <!--        <toolbarbutton label="GO" id="toolbar-basic-go" oncommand="on_menu_go();" />  
         
         <textbox id="toolbar-text-id" flex="1" minwidth = "30" maxwidth="60" emptytext="Expedia.com"/> -->
