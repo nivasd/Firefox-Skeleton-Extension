@@ -5,8 +5,8 @@
 
     <Description about="urn:mozilla:install-manifest">
 
-    <em:id>most_basic@joe.com</em:id>
-    <em:version>0.0.1</em:version>
+    <em:id>ndurairaj@expedia.com</em:id>
+    <em:version>1.0.0</em:version>
     <em:type>2</em:type>
 
 
@@ -14,13 +14,13 @@
 
     <!-- Front End Metadata -->
 
-    <em:name>z most basic</em:name>
+    <em:name>Expedia Media Solutions: Ads Extension</em:name>
     <em:description>
 
-most basic extension
+     Extension created to help analyze DoubleClick ads on the Expedia.com. 
 
     </em:description>
-    <em:creator>joe</em:creator>
+    <em:creator>Nivas Durairaj, Tom Coleman</em:creator>
     <em:homepageURL>http://confluence/display/POS/most_basic</em:homepageURL>
 
     <!-- Describe the Firefox versions we support -->
