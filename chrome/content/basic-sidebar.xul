@@ -41,8 +41,8 @@
     <textbox id="parse-output-textbox-7" value="" multiline="true" width="200"/> --> 
 
   </vbox>
-    <label hidden='true' value="debug progress" />
-    <textbox id="debug-progress" hidden='true' value="" multiline="true" size="80" maxlength="1000"/>
+    <label hidden='false' value="debug progress" />
+    <textbox id="debug-progress" hidden='false' value="" multiline="true" size="80" maxlength="1000"/>
 
 </page>
 

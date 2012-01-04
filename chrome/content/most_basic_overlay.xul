@@ -11,7 +11,7 @@
 <toolbox id="navigator-toolbox">
 
     <toolbar class="chromeclass-toolbar"
-        toolbarname="mostbasicoverlay"
+        toolbarname="Expedia MediaSolutions Toolbar"
         key="open-most-basic-menu"
         customizable="true" id="most-basic-toolbar">
 
@@ -71,7 +71,7 @@ function show_toolbar(event)
 
   <broadcasterset id="mainBroadcasterSet">
     <broadcaster id="viewSidebar_hotel_deep"
-                 label="basic_sidebar_name"
+                 label="Expedia Media Solutions - Ads"
                  key="open-hotel-sidebara"
                  autoCheck="false"
                  type="checkbox"

@@ -40,19 +40,35 @@ function parse_html_text()
         // including line breaks.
         // .* does not match line breaks.
         //var find_add_div_regex = /<div id="id_ad[\s\S]*?<\/div>/g;
-        var find_add_div_regex = /<div id="id_ad[\s\S]*?<\/comment>/g;
+        var find_add_div_regex = /<div id="(id_ad|da_DCOL)[\s\S]*?<\/comment>/g;
         var max_try = 50;
         var text_index = 0;
+        var double_interstitial = -1; 
+        var html_cms_without_div = 0;
         while( max_try-- > 0 )
         {
             var regex_match = find_add_div_regex.exec( current_html );
             if( null == regex_match || regex_match.length < 1 )
             {
-                dump('found no matches');
-                break;
-            }
+                if (max_try!=49) {
+                    break; 
+                }  else {
+
+                 //alert('found no div matches');
+                 find_add_div_regex = /html.cms[\s\S]*?<\/comment>/g;
+                 var regex_match = find_add_div_regex.exec( current_html );
+                
+                 //alert(regex_match); 
+                 if( null == regex_match || regex_match.length < 1 ) {
+                        //alert("Enter bad loop");  
+			break; 
+                 } 
+                 html_cms_without_div = 1;
+                } 
+	    }
 
             var found_div = regex_match[0];
+            //alert("Found Div: " + found_div); 
             //Store adid - comment 
             var comment_regex = /comment type="id" value="(\d+)"/;
             var comment_match = comment_regex.exec(found_div); 
@@ -60,27 +76,61 @@ function parse_html_text()
             //store div; 
             global_div_source[text_index]= found_div; 
             //Store Div Id
-            div_id_regex = /(id_ad.*)\"[\s+]style/;
-            var regex_match_div = div_id_regex.exec(found_div); 
-            global_div_id[text_index]=regex_match_div[1];             
+            if (html_cms_without_div!=1) {
+        	//This contains the div id so we can use the highlight function 
+              
+ 		if (/da_DCOL/.exec(found_div)) {
 
+                   div_id_regex = /(da_DCOL.*)\"[\s+]class/;
+                } else {
+
+                   div_id_regex = /(id_ad.*)\"[\s+]style/;
+                }
+               //div_id_regex = /((id_ad|da_DCOL).*)\"[\s+]style/;
+               var regex_match_div = div_id_regex.exec(found_div);
+               //alert(regex_match_div[1]);  
+               global_div_id[text_index]=regex_match_div[1];             
+            } else {
+               global_div_id[text_index]="no_div_found"; 
+            }
             //Store parameters
             var array = parse_html_cms(global_div_source[text_index], text_index);
             global_target_param[text_index]=array; 
-            create_adbox(text_index, found_div);  
+            var set =0; 
+            
+	    try {
+              //special case for double interstials. 
+              for (var i=0; i<global_target_param.length; i++) {
+                   if (global_target_param[text_index]['PLACEMENT']=='INTERSTITIAL') {
+         		if (set==1) {
+			    double_interstitial =text_index; 
+                            set=2; 
+			} else {
+			    set = 1; 
+			} 
+                   } 
+              }
+            } catch(e) {
+               //alert('Failed check for interstitial: ' + e); 
+            } 
+             //Create adbox only if double interstitial does not exist. 
+             if (global_target_param[text_index]['PLACEMENT']=='INTERSTITIAL'&&set==2) {
+                      continue;  
+	     } 
+             create_adbox(text_index, found_div); 
             //show_parse_result( text_index, found_div );
             text_index++;
+            
         }
         //Create Statistics for Ad Placements
-        //var ad_statistics = document.getElementById('ad_statistics'); 
-        //ad_statistics.value = "Ad Statistics"; 
+        sum_of_ads = global_div_source.length; 
         var adstat_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
   //var item = document.createElement("label"); // create a new XUL label
-        adstat_item.setAttribute('value', 'Total No. of Ads: ' + global_div_source.length);
+        adstat_item.setAttribute('value', 'Total No. of Ads: ' + sum_of_ads);
         document.getElementById('helper').appendChild(adstat_item); 
         var total_placements = 'Ad Placements: ';  
         for (var i=0; i<global_target_param.length; i++) {
-             total_placements+=global_target_param[i]['PLACEMENT']+' ';  
+		total_placements+=global_target_param[i]['PLACEMENT']+' ';
         }
         var adstat_placements = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
         adstat_placements.setAttribute('value', total_placements);
@@ -91,7 +141,7 @@ function parse_html_text()
     }
     catch(e)
     {
-        dump('exception: parse_html_text:\n' + e + '\n');
+        //alert('exception: parse_html_text:\n' + e + '\n');
     }
 }
 
@@ -574,7 +624,7 @@ function create_adbox(text_index, found_div) {
    //Get source of page   
    //Add menulist
    //Add 4 buttons   
-
+ 
   
    try {
       var nodeLabel = createAdLabel(text_index);
