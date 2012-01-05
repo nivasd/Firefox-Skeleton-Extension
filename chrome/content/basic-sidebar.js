@@ -50,22 +50,30 @@ function parse_html_text()
             var regex_match = find_add_div_regex.exec( current_html );
             if( null == regex_match || regex_match.length < 1 )
             {
-                if (max_try!=49) {
-                    break; 
-                }  else {
+                //if (max_try!=49) {
+                    //var find_add_html_cms_regex = /html.cms[\s\S]*?<\/comment>/g;
+                    //var regex_match_html_cms = find_add_html_cms_regex.exec (current_html); 
+                    		    
 
-                 //alert('found no div matches');
+ 
+                 //   break; 
+                //}  else {
+
+//                 alert('found no div matches');
+
                  find_add_div_regex = /html.cms[\s\S]*?<\/comment>/g;
                  var regex_match = find_add_div_regex.exec( current_html );
                 
                  //alert(regex_match); 
                  if( null == regex_match || regex_match.length < 1 ) {
-                        //alert("Enter bad loop");  
+                        alert("Enter bad loop");  
 			break; 
                  } 
                  html_cms_without_div = 1;
-                } 
+                //} 
 	    }
+
+                    
 
             var found_div = regex_match[0];
             //alert("Found Div: " + found_div); 
@@ -95,35 +103,30 @@ function parse_html_text()
             }
             //Store parameters
             var array = parse_html_cms(global_div_source[text_index], text_index);
-            global_target_param[text_index]=array; 
-            var set =0; 
-            
+
+            var set = 0;  
 	    try {
               //special case for double interstials. 
               for (var i=0; i<global_target_param.length; i++) {
-                   if (global_target_param[text_index]['PLACEMENT']=='INTERSTITIAL') {
-         		if (set==1) {
-			    double_interstitial =text_index; 
-                            set=2; 
-			} else {
-			    set = 1; 
-			} 
-                   } 
+                   if (global_target_param[i]['PLACEMENT']==array['PLACEMENT']) {
+                   	set = 1;     
+	           } 
               }
             } catch(e) {
-               //alert('Failed check for interstitial: ' + e); 
+               alert('Failed check for interstitial: ' + e); 
             } 
              //Create adbox only if double interstitial does not exist. 
-             if (global_target_param[text_index]['PLACEMENT']=='INTERSTITIAL'&&set==2) {
+             if (set) {
                       continue;  
 	     } 
+             global_target_param[text_index]=array; 
              create_adbox(text_index, found_div); 
             //show_parse_result( text_index, found_div );
             text_index++;
             
         }
         //Create Statistics for Ad Placements
-        sum_of_ads = global_div_source.length; 
+        sum_of_ads = global_target_param.length; 
         var adstat_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
   //var item = document.createElement("label"); // create a new XUL label
         adstat_item.setAttribute('value', 'Total No. of Ads: ' + sum_of_ads);
@@ -349,11 +352,15 @@ function highlightAd(text_index) {
 
        }       
 
-
- 
-       //element.style.backgroundColor = "#FDFF47";
-       element.style.border = "5px solid red";
-       setAdTitle(text_index); 
+       if (element!=null) {
+         //element.style.backgroundColor = "#FDFF47";
+         element.style.border = "5px solid red";
+         } else {
+          var highlight_not_found = document.getElementById('results');
+          highlight_not_found.value = 'Unable to highlight this ad placement.';
+	}
+        setAdTitle(text_index); 
+        
 
    } catch (e) {
      update_progress('Highlight Ad Error: ' + e); 
@@ -377,11 +384,11 @@ function getAdvanced(text_index) {
       //var url_split = currURL.split('\/'); 
  
       match_ads01 = /ads01.sb.karmalab.net/; 
-      match_lab = /sb.karmalab.net/;
+      match_lab = /(sb|bgb).karmalab.net/;
       match_ppe = /expediaweb/; 
       var server='';
       if (match_ads01.exec(currURL)) {
-         server = 'http://adsvip.ads01.sb.karmalab.net/html.cms/'     
+         server = 'http://cheldfenac02.karmalab.net/html.cms/'     
       } else if (match_lab.exec(currURL)) {
          server = 'http://adsvip.ads01.sb.karmalab.net/html.cms/'     
       } else if (match_ppe.exec(currURL)) {
