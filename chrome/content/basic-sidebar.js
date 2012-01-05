@@ -66,7 +66,7 @@ function parse_html_text()
                 
                  //alert(regex_match); 
                  if( null == regex_match || regex_match.length < 1 ) {
-                        alert("Enter bad loop");  
+                        //alert("Enter bad loop");  
 			break; 
                  } 
                  html_cms_without_div = 1;
@@ -126,6 +126,7 @@ function parse_html_text()
             
         }
         //Create Statistics for Ad Placements
+        var adtags = third_party_tags(current_html);
         sum_of_ads = global_target_param.length; 
         var adstat_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
   //var item = document.createElement("label"); // create a new XUL label
@@ -138,18 +139,52 @@ function parse_html_text()
         var adstat_placements = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
         adstat_placements.setAttribute('value', total_placements);
         document.getElementById('helper').appendChild(adstat_placements); 
+        var adtags_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
+  //var item = document.createElement("label"); // create a new XUL label
+        adtags_item.setAttribute('value', 'Third Party Tags: ' + adtags);
+        document.getElementById('helper').appendChild(adtags_item); 
          
         
          
     }
     catch(e)
     {
-        //alert('exception: parse_html_text:\n' + e + '\n');
+        alert('exception: parse_html_text:\n' + e + '\n');
     }
 }
 
 
+function third_party_tags(current_html) {
+   try {
+     var tags=''; 
+     regex_bluekai = /bluekai/;
+     regex_intentmedia = /intentmedia/; 
+     regex_quantserve = /quantserve/;  
+ 
+     if (regex_bluekai.exec(current_html)) {
+         tags='BlueKai' 
+     } 
+     if (regex_intentmedia.exec(current_html)) {
+         tags+=' - ' + 'Intent Media'; 
 
+     }
+     if (regex_quantserve.exec(current_html)) {
+         tags+=' - ' + 'Quantcast/QuantServe'; 
+
+     }
+     if (tags=='') {
+        tags = 'None found'; 
+     }
+
+     return tags; 
+
+
+
+   } catch(e) {
+       alert ('Error: ' + e); 
+   }
+
+}
 
 
 function parse_html_cms(cms_text, text_index)
@@ -739,7 +774,7 @@ function get_current_html()
                if (check_iframe) {
                   global_iframe_window[i]=iframes[i].contentWindow; 
                   html=html + check_iframe;
-		  update_progress(check_iframe); 							
+		  //alert(check_iframe); 							
 	       }	
 	       		
                update_progress(i);     
