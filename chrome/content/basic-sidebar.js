@@ -78,9 +78,14 @@ function parse_html_text()
             var found_div = regex_match[0];
             //alert("Found Div: " + found_div); 
             //Store adid - comment 
-            var comment_regex = /comment type="id" value="(\d+)"/;
-            var comment_match = comment_regex.exec(found_div); 
-            global_adid[text_index] = comment_match[1];  
+            //var comment_regex = /comment type="id" value="(\d+)"/;
+            var comment_regex = /comment type.*value="(\d+)"/;
+            try {
+              var comment_match = comment_regex.exec(found_div);  
+              global_adid[text_index] = comment_match[1];  
+            } catch (e) {
+                global_adid[text_index] = "No comment id found for this ad placement. ";   
+            }
             //store div; 
             global_div_source[text_index]= found_div; 
             //Store Div Id
@@ -130,7 +135,7 @@ function parse_html_text()
         sum_of_ads = global_target_param.length; 
         var adstat_item = document.createElementNS(XUL_NS, "label"); // create a new XUL label
   //var item = document.createElement("label"); // create a new XUL label
-        adstat_item.setAttribute('value', 'Total No. of Ads: ' + sum_of_ads);
+        adstat_item.setAttribute('value', 'Total Number of Ads: ' + sum_of_ads);
         document.getElementById('helper').appendChild(adstat_item); 
         var total_placements = 'Ad Placements: ';  
         for (var i=0; i<global_target_param.length; i++) {
@@ -296,7 +301,7 @@ function createAdLabel(text_index) {
 	var placement = global_target_param[text_index]['PLACEMENT'];
    
   } else {
-       var placement = 'Placement not found'; 
+       var placement = 'Placement is undefined.'; 
   } 
   item.setAttribute('value', 'Ad Placement: ' + placement);
   //item.setAttribute("label", aLabel);
@@ -387,11 +392,12 @@ function highlightAd(text_index) {
 
        }       
 
+       var highlight_not_found = document.getElementById('results');
        if (element!=null) {
          //element.style.backgroundColor = "#FDFF47";
          element.style.border = "5px solid red";
+         highlight_not_found.value = 'Placement highlighted. \n\nNote: If you are unable to find the highlighted placement, it is currently not available (Ex. INTERSTITIAL) or it is a hidden element on the webpage.';
          } else {
-          var highlight_not_found = document.getElementById('results');
           highlight_not_found.value = 'Unable to highlight this ad placement.';
 	}
         setAdTitle(text_index); 
@@ -523,7 +529,11 @@ function loadXMLDoc(adid)
 }
 
 
+function changeResultsBox(message) {
+    var edit = document.getElementById('results');
+    edit.value = message;
 
+}
 
 
 function getOrders(text_index) {
@@ -532,7 +542,8 @@ function getOrders(text_index) {
         setAdTitle(text_index); 
 
      } catch(e) {
-	update_progress('Error GetOrders: ' + e); 	
+        changeResultsBox("Error: " + global_adid[text_index]); 
+//	update_progress('Error GetOrders: ' + e); 	
      }
 }
 
