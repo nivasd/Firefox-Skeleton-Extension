@@ -803,6 +803,92 @@ function get_current_html()
     return html;
 }
 
+function clearBoxes(elementid) {
+  var container = document.getElementById(elementid); 
+  
+ // for (i=0; i<container.childNodes.length; i++) {
+  //      if (container.childNodes[i].id=='ad_statistics') {
+   //           continue; 
+    //    } else {
+     //       container.removeChild(container.childNodes[i]);  
+      //  }
+
+  //}
+  //
+  for(i=container.childNodes.length; i > 0; i--) {
+        container.removeChild(container.childNodes[0]);
+  }
+  
+
+  document.getElementById('ad-panel-box-top').innerHTML=""; 
+  document.getElementById('ad-info-box').innerHTML=""; 
+  document.getElementById('ad-panel-box').innerHTML=""; 
+      
+
+
+}
+
+
+//Ads Load on new page
+
+
+var win1 = Components.classes['@mozilla.org/appshell/window-mediator;1']
+                  .getService(Components.interfaces.nsIWindowMediator)
+                  .getMostRecentWindow('navigator:browser');
+     
+//win.gBrowser.addEventListener("DOMContentLoaded",function () {  
+
+ //      toggleSidebar("viewSidebarMenu");
+  //     parse_html_text(); }, true);
+
+var pastTime = new Date(); 
+
+var myExtension = {  
+    init: function() {  
+        // The event can be DOMContentLoaded, pageshow, pagehide, load or unload.  
+        //if(win.gBrowser) win.gBrowser.addEventListener("DOMContentLoaded", this.onPageLoad, false);  
+        if(win1.gBrowser) win1.gBrowser.addEventListener("pageshow", this.onPageLoad, false);  
+    },  
+    onPageLoad: function(aEvent) {
+      if (document.getElementById('autoads').checked==true) {
+       
+        var currURL = win1.gBrowser.currentURI.spec; 
+        var doc = aEvent.originalTarget; // doc is document that triggered the event  
+        var win = doc.defaultView; // win is the window for the doc  
+        // test desired conditions and do something  
+        //if (doc.nodeName == "#document") return; // only documents  
+        //if (win != win.top) return; //only top window.  
+        if (win.frameElement) return; // skip iframes/frames  
+        //alert("page is loaded \n" +doc.location.href); 
+        var regex_expedia = /expedia/; 
+        var currentTime = new Date();  
+        if (regex_expedia.exec(doc.location.href) && currURL!=doc.location.href && (currentTime-pastTime>1000)){
+             clearBoxes('helper');  
+             clearBoxes('ad-panel-box');  
+             clearBoxes('ad-info-box');  
+             document.getElementById('ad_listings').value = 'Ad Placement Information';  
+             global_div_source=[]; 
+             global_adid=[];  
+             global_target_param=[]; 
+             global_div_id=[];
+             global_iframe_window=[];             
+             global_html_cms=[]; 
+             parse_html_text(); 
+             pastTime=currentTime;
+             //currUrl=doc.location.href;  
+        } 
+    
+      }     
+    }  
+}  
+
+
+window.addEventListener("load", function load(event){  
+      window.removeEventListener("load", load, false); //remove listener, no longer needed  
+      myExtension.init();    
+   },false); 
+
+
 
 dump('basic sidebar js file end\n');
 
