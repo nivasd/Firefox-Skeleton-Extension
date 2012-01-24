@@ -7,6 +7,384 @@ var global_target_param=[];
 var global_div_id=[];
 var global_iframe_window=[];             
 var global_html_cms=[]; 
+var regex_expedia=/(www|support|media|extras|mediaroom|advertising|ads|cruise|flights|rental-cars|access).expedia.*\/|javascript|about:blank|joinexpedia|expediainc/; 
+var regex_expedia_script=/(www|support|extras|media|mediaroom|advertising|ads|cruise|flights|rental-cars|access).expedia.*\/|joinexpedia|about:blank|expediainc/; 
+
+//Storage Variables nonExpedia Stats
+var global_nonexpedia_link;
+var global_nonexpedia_frame;
+var global_nonexpedia_script;
+var global_total_link; 
+var global_total_iframe; 
+
+
+//change nodelist to array
+function toArray(obj) {
+  var array = [];
+  // iterate backwards ensuring that length is an UInt32
+  for (var i = obj.length >>> 0; i--;) { 
+    array[i] = obj[i];
+  }
+  return array;
+}
+
+function displayLinkInformation() {
+   //alert(links);  
+   linkArray=getElementInformation('a'); 
+   var regex_match;
+   var non_expedia_links=[]; 
+   var count=0; 
+   var i; 
+   for (i=0; i<linkArray.length; i++) {
+     
+    if (regex_expedia.exec(linkArray[i])==null && linkArray[i]!=null) {
+	non_expedia_links[i]=linkArray[i]; 
+        var edit = document.getElementById('results');
+        edit.value = edit.value + "\n" + non_expedia_links[i]; 
+        count+=1;  
+        //alert(non_expedia_links[i]); 
+    }
+
+   }
+    //document.getElementById('title-links').value=count.toString() + " Non-Expedia.com Links";
+    document.getElementById('title-links').value="Non-Expedia Domain Links";
+    global_nonexpedia_link=count;
+
+}
+
+
+function displayScriptInformation() {
+   //alert(links);  
+   linkArray=getElementInformation('script'); 
+   var regex_match;
+   var non_expedia_links=[]; 
+   var count=0; 
+   var i; 
+   for (i=0; i<linkArray.length; i++) {
+     
+    if (regex_expedia_script.exec(linkArray[i].src)==null && linkArray[i].src!=null) {
+	non_expedia_links[i]=linkArray[i]; 
+        var edit = document.getElementById('results');
+        edit.value = edit.value + "\n\n" + non_expedia_links[i].src; 
+        count+=1;  
+        //alert(non_expedia_links[i]); 
+    }
+
+   }
+    //document.getElementById('title-links').value=count.toString() + " Non-Expedia.com Scripts";
+    document.getElementById('title-links').value="Non-Expedia Domain Scripts";
+    global_nonexpedia_script=count;
+
+}
+
+
+function displayImgInformation() {
+   //alert(links);  
+   linkArray=getElementInformation('img'); 
+   var regex_match;
+   var non_expedia_links=[]; 
+   var count=0; 
+   var i; 
+   for (i=0; i<linkArray.length; i++) {
+     
+    if (regex_expedia_script.exec(linkArray[i].src)==null && linkArray[i].src!=null) {
+	non_expedia_links[i]=linkArray[i]; 
+        var edit = document.getElementById('results');
+        edit.value = edit.value + "\n\n" + non_expedia_links[i].src; 
+        count+=1;  
+        //alert(non_expedia_links[i]); 
+    }
+
+   }
+    //document.getElementById('title-links').value=count.toString() + " Non-Expedia.com Scripts";
+    document.getElementById('title-links').value="Non-Expedia Domain Images";
+    global_nonexpedia_script=count;
+
+}
+
+
+
+function getLinkInformation() {
+   try { 
+   var currentWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                            .getService(Components.interfaces.nsIWindowMediator)
+                            .getMostRecentWindow("navigator:browser");
+   var currBrowser = currentWindow.getBrowser();
+   var contentDoc = currBrowser.contentDocument; 
+
+   var links= contentDoc.getElementsByTagName('a');
+   linkArray=toArray(links); 
+
+  for (i=0; i<global_iframe_window.length; i++) {
+     var iframe_links = global_iframe_window[i].document.getElementsByTagName('a'); 
+     //alert("Nivas" + iframe_links[0]); 
+     for (k=0; k<iframe_links.length; k++) {
+          //alert("Nivas" + iframe_links[k].src); 
+          var size_links=links.length; 
+          linkArray.push(iframe_links[k]); 
+     }
+
+
+  }
+  global_total_link=linkArray.length;
+  return linkArray; 
+  } catch (e) {
+       //alert("Error: " + e); 
+  } 
+
+}
+
+
+function getElementInformation(element) {
+   try { 
+   var currentWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                            .getService(Components.interfaces.nsIWindowMediator)
+                            .getMostRecentWindow("navigator:browser");
+   var currBrowser = currentWindow.getBrowser();
+   var contentDoc = currBrowser.contentDocument; 
+
+   var links= contentDoc.getElementsByTagName(element);
+   linkArray=toArray(links); 
+
+  for (i=0; i<global_iframe_window.length; i++) {
+     var iframe_links = global_iframe_window[i].document.getElementsByTagName(element); 
+     //alert("Nivas" + iframe_links[0]); 
+     for (k=0; k<iframe_links.length; k++) {
+          //alert("Nivas" + iframe_links[k].src); 
+          var size_links=links.length; 
+          linkArray.push(iframe_links[k]); 
+     }
+
+
+  }
+  return linkArray; 
+  } catch (e) {
+       //alert("Error: " + e); 
+  } 
+
+}
+
+
+function displayFrameInformation() {
+   //alert(links);  
+   linkArray=getElementInformation('iframe'); 
+   var regex_match;
+   var non_expedia_links=[]; 
+   var count=0; 
+   var i; 
+   for (i=0; i<linkArray.length; i++) {
+     
+    if (regex_expedia.exec(linkArray[i].src)==null && linkArray[i]!=null) {
+	non_expedia_links[i]=linkArray[i].src; 
+        var edit = document.getElementById('results');
+        edit.value = edit.value + "\n\n" + non_expedia_links[i]; 
+        count+=1;  
+        //alert(non_expedia_links[i]); 
+    }
+
+   }
+    document.getElementById('title-links').value="Non-Expedia Domain Frames";
+    global_nonexpedia_frame=count;
+
+}
+
+function getFrameInformation() {
+   try { 
+   var currentWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                            .getService(Components.interfaces.nsIWindowMediator)
+                            .getMostRecentWindow("navigator:browser");
+   var currBrowser = currentWindow.getBrowser();
+   var contentDoc = currBrowser.contentDocument; 
+
+   var links= contentDoc.getElementsByTagName('iframe');
+   linkArray=toArray(links); 
+
+  for (i=0; i<global_iframe_window.length; i++) {
+     var iframe_links = global_iframe_window[i].document.getElementsByTagName('iframe'); 
+     //alert("Nivas" + iframe_links[0]); 
+     for (k=0; k<iframe_links.length; k++) {
+          //alert("Nivas" + iframe_links[k].src); 
+          var size_links=links.length; 
+          linkArray.push(iframe_links[k]); 
+     }
+
+
+  }
+  global_total_frame=linkArray.length;
+  return linkArray; 
+  } catch (e) {
+       //alert("Error: " + e); 
+  } 
+
+}
+
+
+//Clear results box
+//
+function clearResultsBox() {
+
+   document.getElementById('results').value=''; 
+}
+
+
+function createXUL(type, id, label, oncommand, attach_element){
+   const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+   var item = document.createElementNS(XUL_NS, type); // create a new XUL button
+   item.setAttribute('id', id);
+   item.setAttribute('label', label); 
+   item.setAttribute('oncommand', oncommand); 
+   document.getElementById(attach_element).appendChild(item); 
+
+
+
+}
+
+//Javascript/Third party calls. 
+//
+
+function show_third_party_info() {
+ try {
+   global_nonexpedia_link='';
+   global_nonexpedia_frame='';
+   global_nonexpedia_script='';
+   global_total_link=''; 
+   global_total_iframe=''; 
+   global_iframe_window=[];             
+
+   clearBoxes('helper');  
+   clearBoxes('third-party');  
+   clearBoxes('ad-panel-box');  
+   clearBoxes('ad-info-box');  
+   document.getElementById('ad_statistics').value="Expedia.com Page Characteristics";
+   document.getElementById('ad_listings').value="";
+
+   //XUL constant
+   const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+   //Reload Statistics
+   createXUL('button', 'button-statistics', "Reload Page Statistics", "show_third_party_info()", "third-party");
+   //Back 
+   
+
+   //Create title before textbox
+   var item = document.createElementNS(XUL_NS, "label"); // create a new XUL button
+   item.setAttribute('id', 'title-links');
+   item.setAttribute('value', 'Results'); 
+   document.getElementById('ad-info-box').appendChild(item); 
+
+
+
+   //Create text box
+    var textbox_item = document.createElementNS(XUL_NS, "textbox"); // create a new XUL label
+    textbox_item.setAttribute('height', '400');
+    textbox_item.setAttribute('id', 'results');
+    textbox_item.setAttribute('multiline', 'true');
+        //item.setAttribute("label", aLabel);
+    document.getElementById('ad-info-box').appendChild(textbox_item); 
+    //document.getElementById('ad-info-box').appendChild(textbox_item); 
+
+
+
+
+
+   var currentWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                            .getService(Components.interfaces.nsIWindowMediator)
+                            .getMostRecentWindow("navigator:browser");
+   var currBrowser = currentWindow.getBrowser();
+   var contentDoc = currBrowser.contentDocument;
+
+   
+   //Iframe links
+   //Get iframes 
+   var iframes = currBrowser.contentDocument.getElementsByTagName("iframe");
+   //alert("IFRAMES: " + iframes); 
+   for (var i=0; i < iframes.length; i++) { 
+         try {
+	        var check_iframe = iframes[i].contentWindow.document.getElementsByTagName('a'); 
+               } catch (e) {
+		      update_progress("Error: "); 
+                      update_progress(e);
+                      update_progress(i);
+                      continue;  	
+               }  
+               //iframe found and it can be accessed. 
+               if (check_iframe) {
+                  global_iframe_window[i]=iframes[i].contentWindow; 
+                //  links=links.concat(check_iframe);
+		  //alert(check_iframe); 							
+	       }	
+	       		
+               update_progress(i);     
+   }
+
+  //displayLinkInformation(linkArray); 
+   linkArray=getLinkInformation();
+   var item = document.createElementNS(XUL_NS, "textbox"); // create a new XUL button
+   item.setAttribute('height', '80');
+   item.setAttribute('multiline', 'true'); 
+
+   item.setAttribute('id', 'page_characteristics'); 
+   item.setAttribute('value', 'Total Links: '+ linkArray.length); 
+   document.getElementById('helper').appendChild(item); 
+  
+ //display Frame infromation
+  linkArray=getFrameInformation();
+   var value_item = document.getElementById('page_characteristics').value; // create a new XUL button
+   document.getElementById('page_characteristics').value = value_item + "\n" + "Total Frames: " + linkArray.length; // create a new XUL button
+
+ //display Script infromation
+  linkArray=getElementInformation('script');
+   var value_item = document.getElementById('page_characteristics').value; // create a new XUL button
+   document.getElementById('page_characteristics').value = value_item + "\n" + "Total Scripts: " + linkArray.length; // create a new XUL button
+
+//display Image infromation
+  linkArray=getElementInformation('img');
+   var value_item = document.getElementById('page_characteristics').value; // create a new XUL button
+   document.getElementById('page_characteristics').value = value_item + "\n" + "Total Images: " + linkArray.length; // create a new XUL button
+
+//display Number of DOM infromation
+  linkArray=getElementInformation('*');
+   var value_item = document.getElementById('page_characteristics').value; // create a new XUL button
+   document.getElementById('page_characteristics').value = value_item + "\n" + "Total Number of DOM elements: " + linkArray.length; // create a new XUL button
+
+
+
+   
+   //Create button for Generating links
+   var item = document.createElementNS(XUL_NS, "button"); // create a new XUL button
+   item.setAttribute('id', 'links-button');
+   item.setAttribute('label', 'Display Non-Expedia Domain Links'); 
+   item.setAttribute('oncommand', 'clearResultsBox(); displayLinkInformation()'); 
+   document.getElementById('helper').appendChild(item); 
+
+    //Create button for Generating Scripts
+   var item = document.createElementNS(XUL_NS, "button"); // create a new XUL button
+   item.setAttribute('id', 'links-button');
+   item.setAttribute('label', 'Display Non-Expedia Domain Scripts'); 
+   item.setAttribute('oncommand', 'clearResultsBox(); displayScriptInformation()'); 
+   document.getElementById('helper').appendChild(item); 
+
+
+   //Create button for Generating Scripts
+   var item = document.createElementNS(XUL_NS, "button"); // create a new XUL button
+   item.setAttribute('id', 'links-button');
+   item.setAttribute('label', 'Display Non-Expedia Domain Images'); 
+   item.setAttribute('oncommand', 'clearResultsBox(); displayImgInformation()'); 
+   document.getElementById('helper').appendChild(item); 
+   
+   
+   //Create button for Generating Frames
+   var item = document.createElementNS(XUL_NS, "button"); // create a new XUL button
+   item.setAttribute('id', 'links-button');
+   item.setAttribute('label', 'Display Non-Expedia Domain Frames'); 
+   item.setAttribute('oncommand', 'clearResultsBox(); displayFrameInformation()'); 
+   document.getElementById('helper').appendChild(item); 
+    
+   } catch(e) {
+ 	//alert("Error: "+e); 
+ } 
+
+}
 
 
 function parse_html_text()
@@ -118,7 +496,7 @@ function parse_html_text()
 	           } 
               }
             } catch(e) {
-               alert('Failed check for interstitial: ' + e); 
+               //alert('Failed check for interstitial: ' + e); 
             } 
              //Create adbox only if double interstitial does not exist. 
              if (set) {
@@ -154,7 +532,7 @@ function parse_html_text()
     }
     catch(e)
     {
-        alert('exception: parse_html_text:\n' + e + '\n');
+        //alert('exception: parse_html_text:\n' + e + '\n');
     }
 }
 
@@ -186,7 +564,7 @@ function third_party_tags(current_html) {
 
 
    } catch(e) {
-       alert ('Error: ' + e); 
+       //alert ('Error: ' + e); 
    }
 
 }
@@ -521,7 +899,7 @@ function loadXMLDoc(adid)
    
 
     } catch(e) {
-	alert('loadXMLDOC: ' + e); 		
+	//alert('loadXMLDOC: ' + e); 		
 
     } 
 
@@ -858,7 +1236,7 @@ var myExtension = {
         // test desired conditions and do something  
         //if (doc.nodeName == "#document") return; // only documents  
         //if (win != win.top) return; //only top window.  
-        if (win.frameElement) return; // skip iframes/frames  
+       // if (win.frameElement) return; // skip iframes/frames  
         //alert("page is loaded \n" +doc.location.href); 
         var regex_expedia = /expedia/; 
         var currentTime = new Date();  

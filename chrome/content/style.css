@@ -4,6 +4,10 @@ vbox#ad-panel-box {
    background-color: #1E90FF; 
 }
 
+vbox#third-party { 
+   background-color: #ffffff; 
+}
+
 vbox#ad-info-box { 
    background-color: #1E90FF; 
 }
@@ -20,6 +24,13 @@ label#ad_statistics {
 }
 
 label#ad_listings {
+    font-size: 18px; 
+    color: white;
+     
+
+}
+
+label#title-links {
     font-size: 18px; 
     color: white;
      

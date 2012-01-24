@@ -14,15 +14,19 @@
 
 <page id="adds_helper_Sidebar" title="Adds HTML Parser"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="parse_html_text()">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
   <script src="basic-sidebar.js"/>
-  <checkbox label="Enable Automatic Ad Search" id="autoads" checked="false"/>
+  <vbox id="third-party">
+    <button label="View Page Characteristics" oncommand="show_third_party_info()"/> 
+    <checkbox label="Enable Automatic Ad Search" id="autoads" checked="false"/>
+  </vbox> 
   <vbox id="ad-panel-box-top" flex="1">
        <!-- <button id="parse-html-button" oncommand="parse_html_text();" label="Show Ad Information" height="20"/> --> 
        <label id="ad_statistics" value = "Ad Statistics"/>
       <vbox id="helper">  
        </vbox>
        <label id="ad_listings" value="Ad Placement Information" />
-  </vbox> 
+  </vbox>
   <vbox id ="ad-info-box" flex="1">
 
   </vbox>
